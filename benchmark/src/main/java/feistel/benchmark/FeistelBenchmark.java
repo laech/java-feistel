@@ -13,26 +13,30 @@ import java.util.function.IntUnaryOperator;
 @State(Scope.Benchmark)
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FeistelBenchmark {
 
     private static final IntUnaryOperator RF = IntUnaryOperator.identity();
+    private static final int ROUNDS = 7;
+
+    private static final Feistel.OfInt ofInt = new Feistel.OfInt(ROUNDS, 16, 16, RF);
 
     @Param("100001")
     private int input;
 
-    @Param({"4", "7"})
-    private int rounds;
-
     @Benchmark
     public int balanced() {
-        return Feistel.compute(input, rounds, RF);
+        return Feistel.balanced(input, ROUNDS, RF);
     }
 
     @Benchmark
     public int unbalanced() {
-        return Feistel.unbalanced(input, rounds, 16, RF);
+        return Feistel.unbalanced(input, ROUNDS, 16, 16, RF);
+    }
+
+    @Benchmark
+    public int unbalancedOfInt() {
+        return ofInt.applyAsInt(input);
     }
 
     public static void main(String[] args) throws Exception {
