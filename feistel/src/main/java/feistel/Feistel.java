@@ -32,24 +32,24 @@ public final class Feistel {
             int targetBits,
             IntUnaryOperator roundFunction
     ) {
-        int sourceBlockMask = ~(0xffffffff >>> sourceBits);
-        int targetBlockMask = ~(0xffffffff << targetBits);
-        int nullBlockMask = ~sourceBlockMask ^ targetBlockMask;
-        int nullBlocks = Integer.SIZE - sourceBits - targetBits;
+        int sourceMask = ~(0xffffffff << sourceBits);
+        int targetMask = ~(0xffffffff << targetBits);
+        int nullMask = (0xffffffff >>> sourceBits) & targetMask;
+        int nullBits = Integer.SIZE - sourceBits - targetBits;
         for (int i = 0; i < rounds; i++) {
-            int a = input >>> nullBlocks >>> targetBits;
-            int b = input & targetBlockMask;
-            int n = (input & nullBlockMask) >>> targetBits;
-            int f = roundFunction.applyAsInt(b) & targetBlockMask;
+            int a = input >>> nullBits >>> targetBits;
+            int b = input & targetMask;
+            int n = (input & nullMask) >>> targetBits;
+            int f = roundFunction.applyAsInt(b) & sourceMask;
             int a_ = a;
             a = b;
             b = a_ ^ f;
-            input = (a << nullBlocks << targetBits | n << targetBits | b);
+            input = (a << nullBits << sourceBits | n << sourceBits | b);
         }
-        int a = input >>> nullBlocks >>> targetBits;
-        int b = input & targetBlockMask;
-        int n = (input & nullBlockMask) >>> targetBits;
-        return (b << nullBlocks << sourceBits | n << sourceBits | a);
+        int a = input >>> nullBits >>> targetBits;
+        int b = input & targetMask;
+        int n = (input & nullMask) >>> targetBits;
+        return (b << nullBits << sourceBits | n << sourceBits | a);
     }
 
     public static int compute(int input, int rounds, IntUnaryOperator roundFunction) {

@@ -37,6 +37,18 @@ public final class FeistelTest {
     }
 
     @Test
+    public void isPermutationUnbalanced() {
+        int step = 3231;
+        long count = (1L << 32) / step;
+        assertEquals(count, IntStream
+                .iterate(Integer.MIN_VALUE, i -> i + step)
+                .limit(count)
+                .map(i -> unbalanced(i, 4, 15, 17, value -> value * 11))
+                .distinct()
+                .count());
+    }
+
+    @Test
     public void canBeReversedBalanced() {
         IntUnaryOperator feistel = compute(4, (value) -> value * 31);
         IntUnaryOperator inverse = feistel.compose(feistel);
