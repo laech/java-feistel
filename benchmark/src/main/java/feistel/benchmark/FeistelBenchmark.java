@@ -8,6 +8,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongUnaryOperator;
 
 @Fork(1)
 @State(Scope.Benchmark)
@@ -17,6 +18,7 @@ import java.util.function.IntUnaryOperator;
 public class FeistelBenchmark {
 
     private static final IntUnaryOperator RF = IntUnaryOperator.identity();
+    private static final LongUnaryOperator RFL = LongUnaryOperator.identity();
     private static final int ROUNDS = 7;
 
     private static final Feistel.OfInt ofInt = new Feistel.OfInt(ROUNDS, 16, 16, RF);
@@ -27,6 +29,11 @@ public class FeistelBenchmark {
     @Benchmark
     public int balanced() {
         return Feistel.balanced(input, ROUNDS, RF);
+    }
+
+    @Benchmark
+    public long balancedl() {
+        return Feistel.balanced(input, ROUNDS, RFL);
     }
 
     @Benchmark

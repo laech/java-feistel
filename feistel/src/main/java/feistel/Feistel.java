@@ -1,6 +1,7 @@
 package feistel;
 
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongUnaryOperator;
 
 public final class Feistel {
 
@@ -65,6 +66,18 @@ public final class Feistel {
             b = a_ ^ F;
         }
         return (b << 16) | a;
+    }
+
+    public static long balanced(long input, int rounds, LongUnaryOperator roundFunction) {
+        long a = input >>> 32;
+        long b = input & 0xff_ff_ff_ffL;
+        for (int i = 0; i < rounds; i++) {
+            long F = roundFunction.applyAsLong(b) & 0xff_ff_ff_ffL;
+            long a_ = a;
+            a = b;
+            b = a_ ^ F;
+        }
+        return (b << 32) | a;
     }
 
     public static IntUnaryOperator compute(int rounds, IntUnaryOperator roundFunction) {
