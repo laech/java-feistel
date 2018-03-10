@@ -35,7 +35,7 @@ public final class FeistelTest {
 
     @Test
     public void canBeReversedUnbalanced() {
-        int rounds = 4; // 0;
+        int rounds = 7;
         int sourceBits = 15;
         int targetBits = 16;
         IntUnaryOperator roundFunction = (value) -> value * 31;
