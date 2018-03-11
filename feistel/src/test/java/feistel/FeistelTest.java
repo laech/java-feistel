@@ -3,8 +3,7 @@ package feistel;
 import org.junit.Test;
 
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.IntUnaryOperator;
-import java.util.stream.IntStream;
+import java.util.function.LongUnaryOperator;
 import java.util.stream.LongStream;
 
 import static feistel.Feistel.*;
@@ -14,10 +13,10 @@ public final class FeistelTest {
 
     @Test
     public void isPermutation() {
-        IntUnaryOperator feistel = compute(3, (value) -> value * 11);
+        LongUnaryOperator feistel = compute(3, (value) -> value * 11);
         int step = 7231;
         long count = (1L << 32) / step;
-        assertEquals(count, IntStream
+        assertEquals(count, LongStream
                 .iterate(Integer.MIN_VALUE, i -> i + step)
                 .limit(count)
                 .map(feistel)
@@ -40,7 +39,7 @@ public final class FeistelTest {
     public void isPermutationUnbalanced() {
         int step = 3231;
         long count = (1L << 32) / step;
-        assertEquals(count, IntStream
+        assertEquals(count, LongStream
                 .iterate(Integer.MIN_VALUE, i -> i + step)
                 .limit(count)
                 .map(i -> unbalanced(i, 4, 15, 17, value -> value * 11))
@@ -50,10 +49,10 @@ public final class FeistelTest {
 
     @Test
     public void canBeReversedBalanced() {
-        IntUnaryOperator feistel = compute(4, (value) -> value * 31);
-        IntUnaryOperator inverse = feistel.compose(feistel);
+        LongUnaryOperator feistel = compute(4, (value) -> value * 31);
+        LongUnaryOperator inverse = feistel.compose(feistel);
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            assertEquals(i, inverse.applyAsInt((int) i));
+            assertEquals(i, inverse.applyAsLong((int) i));
         }
     }
 
@@ -73,10 +72,10 @@ public final class FeistelTest {
         int rounds = 11;
         int sourceBits = 3;
         int targetBits = 17;
-        IntUnaryOperator roundFunction = (value) -> value * 31;
+        LongUnaryOperator roundFunction = (value) -> value * 31;
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            int output = doUnbalanced((int) i, rounds, sourceBits, targetBits, false, roundFunction);
-            int inverse = doUnbalanced(output, rounds, targetBits, sourceBits, true, roundFunction);
+            long output = doUnbalanced(i, rounds, sourceBits, targetBits, false, roundFunction);
+            long inverse = doUnbalanced(output, rounds, targetBits, sourceBits, true, roundFunction);
             assertEquals(i, inverse);
         }
     }

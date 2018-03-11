@@ -1,6 +1,5 @@
 package feistel;
 
-import java.util.function.IntUnaryOperator;
 import java.util.function.LongUnaryOperator;
 
 public final class Feistel {
@@ -8,73 +7,61 @@ public final class Feistel {
     private Feistel() {
     }
 
-    public static int unbalanced(
-            int input,
+    public static long unbalanced(
+            long input,
             int rounds,
             int sourceBits,
             int targetBits,
-            IntUnaryOperator roundFunction
+            LongUnaryOperator roundFunction
     ) {
         if (sourceBits < 0
                 || targetBits < 0
-                || targetBits + sourceBits > Integer.SIZE) {
+                || targetBits + sourceBits > Long.SIZE) {
             throw new IllegalArgumentException();
         }
-        return sourceBits == targetBits && sourceBits == 16
+        return sourceBits == targetBits && sourceBits == 32
                 ? balanced(input, rounds, roundFunction)
                 : doUnbalanced(input, rounds, sourceBits, targetBits, false, roundFunction);
     }
 
-    static int doUnbalanced(
-            int input,
+    static long doUnbalanced(
+            long input,
             int rounds,
             int sourceBits,
             int targetBits,
             boolean reverse,
-            IntUnaryOperator roundFunction
+            LongUnaryOperator roundFunction
     ) {
-        int nullBits = Integer.SIZE - sourceBits - targetBits;
-        int nullMask = 0xffffffff >>> sourceBits >>> targetBits;
-        int sourceMask = 0xffffffff >>> nullBits >>> targetBits;
-        int targetMask = 0xffffffff >>> nullBits >>> sourceBits;
+        int nullBits = Long.SIZE - sourceBits - targetBits;
+        long nullMask = 0xffff_ffff_ffff_ffffL >>> sourceBits >>> targetBits;
+        long sourceMask = 0xffff_ffff_ffff_ffffL >>> nullBits >>> targetBits;
+        long targetMask = 0xffff_ffff_ffff_ffffL >>> nullBits >>> sourceBits;
 
         for (int i = 0; i < rounds; i++) {
-            int a = input >>> targetBits >>> nullBits;
-            int n = input >>> targetBits & nullMask;
-            int b = input & targetMask;
+            long a = input >>> targetBits >>> nullBits;
+            long n = input >>> targetBits & nullMask;
+            long b = input & targetMask;
 
             if (reverse) {
-                input = ((b ^ roundFunction.applyAsInt(a) & targetMask) << nullBits << sourceBits
+                input = ((b ^ roundFunction.applyAsLong(a) & targetMask) << nullBits << sourceBits
                         | n << sourceBits
                         | a);
             } else {
                 input = ((b << nullBits << sourceBits)
                         | n << sourceBits
-                        | a ^ roundFunction.applyAsInt(b) & sourceMask);
+                        | a ^ roundFunction.applyAsLong(b) & sourceMask);
             }
         }
         return input;
     }
 
-    public static int compute(int input, int rounds, IntUnaryOperator roundFunction) {
+    public static long compute(long input, int rounds, LongUnaryOperator roundFunction) {
         return balanced(input, rounds, roundFunction);
-    }
-
-    public static int balanced(int input, int rounds, IntUnaryOperator roundFunction) {
-        int a = input >>> 16;
-        int b = input & 0xffff;
-        for (int i = 0; i < rounds; i++) {
-            int F = roundFunction.applyAsInt(b) & 0xffff;
-            int a_ = a;
-            a = b;
-            b = a_ ^ F;
-        }
-        return (b << 16) | a;
     }
 
     public static long balanced(long input, int rounds, LongUnaryOperator roundFunction) {
         long a = input >>> 32;
-        long b = input & 0xff_ff_ff_ffL;
+        long b = input & 0xffff_ffffL;
         for (int i = 0; i < rounds; i++) {
             long F = roundFunction.applyAsLong(b) & 0xff_ff_ff_ffL;
             long a_ = a;
@@ -84,18 +71,18 @@ public final class Feistel {
         return (b << 32) | a;
     }
 
-    public static IntUnaryOperator compute(int rounds, IntUnaryOperator roundFunction) {
+    public static LongUnaryOperator compute(int rounds, LongUnaryOperator roundFunction) {
         return input -> compute(input, rounds, roundFunction);
     }
 
-    public static final class OfInt implements IntUnaryOperator {
+    public static final class OfLong implements LongUnaryOperator {
 
         private final int rounds;
         private final int sourceBits;
         private final int targetBits;
-        private final IntUnaryOperator roundFunction;
+        private final LongUnaryOperator roundFunction;
 
-        public OfInt(int rounds, int sourceBits, int targetBits, IntUnaryOperator roundFunction) {
+        public OfLong(int rounds, int sourceBits, int targetBits, LongUnaryOperator roundFunction) {
             this.rounds = rounds;
             this.sourceBits = sourceBits;
             this.targetBits = targetBits;
@@ -103,15 +90,15 @@ public final class Feistel {
         }
 
         @Override
-        public int applyAsInt(int input) {
+        public long applyAsLong(long input) {
             return unbalanced(input, rounds, sourceBits, targetBits, roundFunction);
         }
 
-        public OfInt reversed() {
+        public OfLong reversed() {
             if (sourceBits == targetBits && sourceBits + targetBits == Integer.SIZE) {
                 return this;
             }
-            return new OfInt(rounds, targetBits, sourceBits, roundFunction);
+            return new OfLong(rounds, targetBits, sourceBits, roundFunction);
         }
     }
 }

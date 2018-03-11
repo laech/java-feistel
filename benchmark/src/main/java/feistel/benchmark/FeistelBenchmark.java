@@ -7,7 +7,6 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.IntUnaryOperator;
 import java.util.function.LongUnaryOperator;
 
 @Fork(1)
@@ -17,33 +16,27 @@ import java.util.function.LongUnaryOperator;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FeistelBenchmark {
 
-    private static final IntUnaryOperator RF = IntUnaryOperator.identity();
-    private static final LongUnaryOperator RFL = LongUnaryOperator.identity();
+    private static final LongUnaryOperator RF = LongUnaryOperator.identity();
     private static final int ROUNDS = 7;
 
-    private static final Feistel.OfInt ofInt = new Feistel.OfInt(ROUNDS, 16, 16, RF);
+    private static final Feistel.OfLong ofLong = new Feistel.OfLong(ROUNDS, 32, 32, RF);
 
     @Param("100001")
-    private int input;
+    private long input;
 
     @Benchmark
-    public int balanced() {
+    public long balanced() {
         return Feistel.balanced(input, ROUNDS, RF);
     }
 
     @Benchmark
-    public long balancedl() {
-        return Feistel.balanced(input, ROUNDS, RFL);
+    public long unbalanced() {
+        return Feistel.unbalanced(input, ROUNDS, 32, 32, RF);
     }
 
     @Benchmark
-    public int unbalanced() {
-        return Feistel.unbalanced(input, ROUNDS, 16, 16, RF);
-    }
-
-    @Benchmark
-    public int unbalancedOfInt() {
-        return ofInt.applyAsInt(input);
+    public long unbalancedOfLong() {
+        return ofLong.applyAsLong(input);
     }
 
     public static void main(String[] args) throws Exception {
