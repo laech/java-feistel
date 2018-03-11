@@ -22,7 +22,7 @@ public final class Feistel {
         }
         return sourceBits == targetBits && sourceBits == 16
                 ? balanced(input, rounds, roundFunction)
-                : doUnbalanced(input, rounds, sourceBits, targetBits, roundFunction);
+                : doUnbalanced(input, rounds, sourceBits, targetBits, false, roundFunction);
     }
 
     static int doUnbalanced(
@@ -30,41 +30,28 @@ public final class Feistel {
             int rounds,
             int sourceBits,
             int targetBits,
+            boolean reverse,
             IntUnaryOperator roundFunction
     ) {
         int nullBits = Integer.SIZE - sourceBits - targetBits;
         int nullMask = 0xffffffff >>> sourceBits >>> targetBits;
         int sourceMask = 0xffffffff >>> nullBits >>> targetBits;
         int targetMask = 0xffffffff >>> nullBits >>> sourceBits;
+
         for (int i = 0; i < rounds; i++) {
             int a = input >>> targetBits >>> nullBits;
             int n = input >>> targetBits & nullMask;
             int b = input & targetMask;
-            input = ((b << nullBits << sourceBits)
-                    | n << sourceBits
-                    | a ^ roundFunction.applyAsInt(b) & sourceMask);
-        }
-        return input;
-    }
 
-    static int doUnbalancedReversed(
-            int input,
-            int rounds,
-            int sourceBits,
-            int targetBits,
-            IntUnaryOperator roundFunction
-    ) {
-        // (a || b) || c = c + f(a || b) || (a || b)
-        int nullBits = Integer.SIZE - sourceBits - targetBits;
-        int nullMask = 0xffffffff >>> sourceBits >>> targetBits;
-        int targetMask = 0xffffffff >>> sourceBits >>> nullBits;
-        for (int i = rounds - 1; i >= 0; i--) {
-            int a = input >>> targetBits >>> nullBits;
-            int n = input >>> targetBits & nullMask;
-            int b = input & targetMask;
-            input = ((b ^ roundFunction.applyAsInt(a) & targetMask) << nullBits << sourceBits
-                    | n << sourceBits
-                    | a);
+            if (reverse) {
+                input = ((b ^ roundFunction.applyAsInt(a) & targetMask) << nullBits << sourceBits
+                        | n << sourceBits
+                        | a);
+            } else {
+                input = ((b << nullBits << sourceBits)
+                        | n << sourceBits
+                        | a ^ roundFunction.applyAsInt(b) & sourceMask);
+            }
         }
         return input;
     }

@@ -75,8 +75,8 @@ public final class FeistelTest {
         int targetBits = 17;
         IntUnaryOperator roundFunction = (value) -> value * 31;
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            int output = doUnbalanced((int) i, rounds, sourceBits, targetBits, roundFunction);
-            int inverse = doUnbalancedReversed(output, rounds, targetBits, sourceBits, roundFunction);
+            int output = doUnbalanced((int) i, rounds, sourceBits, targetBits, false, roundFunction);
+            int inverse = doUnbalanced(output, rounds, targetBits, sourceBits, true, roundFunction);
             assertEquals(i, inverse);
         }
     }
