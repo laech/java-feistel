@@ -25,31 +25,48 @@ public final class Feistel {
                 : doUnbalanced(input, rounds, sourceBits, targetBits, roundFunction);
     }
 
-    private static int doUnbalanced(
+    static int doUnbalanced(
             int input,
             int rounds,
             int sourceBits,
             int targetBits,
             IntUnaryOperator roundFunction
     ) {
-        int sourceMask = ~(0xffffffff << sourceBits);
-        int targetMask = ~(0xffffffff << targetBits);
-        int nullMask = (0xffffffff >>> sourceBits) & targetMask;
         int nullBits = Integer.SIZE - sourceBits - targetBits;
+        int nullMask = 0xffffffff >>> sourceBits >>> targetBits;
+        int sourceMask = 0xffffffff >>> nullBits >>> targetBits;
+        int targetMask = 0xffffffff >>> nullBits >>> sourceBits;
         for (int i = 0; i < rounds; i++) {
-            int a = input >>> nullBits >>> targetBits;
+            int a = input >>> targetBits >>> nullBits;
+            int n = input >>> targetBits & nullMask;
             int b = input & targetMask;
-            int n = (input & nullMask) >>> targetBits;
-            int f = roundFunction.applyAsInt(b) & sourceMask;
-            int a_ = a;
-            a = b;
-            b = a_ ^ f;
-            input = (a << nullBits << sourceBits | n << sourceBits | b);
+            input = ((b << nullBits << sourceBits)
+                    | n << sourceBits
+                    | a ^ roundFunction.applyAsInt(b) & sourceMask);
         }
-        int a = input >>> nullBits >>> targetBits;
-        int b = input & targetMask;
-        int n = (input & nullMask) >>> targetBits;
-        return (b << nullBits << sourceBits | n << sourceBits | a);
+        return input;
+    }
+
+    static int doUnbalancedReversed(
+            int input,
+            int rounds,
+            int sourceBits,
+            int targetBits,
+            IntUnaryOperator roundFunction
+    ) {
+        // (a || b) || c = c + f(a || b) || (a || b)
+        int nullBits = Integer.SIZE - sourceBits - targetBits;
+        int nullMask = 0xffffffff >>> sourceBits >>> targetBits;
+        int targetMask = 0xffffffff >>> sourceBits >>> nullBits;
+        for (int i = rounds - 1; i >= 0; i--) {
+            int a = input >>> targetBits >>> nullBits;
+            int n = input >>> targetBits & nullMask;
+            int b = input & targetMask;
+            input = ((b ^ roundFunction.applyAsInt(a) & targetMask) << nullBits << sourceBits
+                    | n << sourceBits
+                    | a);
+        }
+        return input;
     }
 
     public static int compute(int input, int rounds, IntUnaryOperator roundFunction) {

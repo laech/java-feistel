@@ -70,13 +70,13 @@ public final class FeistelTest {
 
     @Test
     public void canBeReversedUnbalanced() {
-        int rounds = 7;
-        int sourceBits = 15;
-        int targetBits = 16;
+        int rounds = 11;
+        int sourceBits = 3;
+        int targetBits = 17;
         IntUnaryOperator roundFunction = (value) -> value * 31;
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            int output = unbalanced((int) i, rounds, sourceBits, targetBits, roundFunction);
-            int inverse = unbalanced(output, rounds, targetBits, sourceBits, roundFunction);
+            int output = doUnbalanced((int) i, rounds, sourceBits, targetBits, roundFunction);
+            int inverse = doUnbalancedReversed(output, rounds, targetBits, sourceBits, roundFunction);
             assertEquals(i, inverse);
         }
     }
