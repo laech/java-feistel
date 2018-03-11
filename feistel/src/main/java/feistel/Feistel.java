@@ -21,21 +21,27 @@ public final class Feistel {
         }
         return sourceBits == targetBits && sourceBits == 32
                 ? balanced(input, rounds, roundFunction)
-                : doUnbalanced(input, rounds, sourceBits, targetBits, false, roundFunction);
+                : doUnbalanced(input, rounds, 64, sourceBits, targetBits, false, roundFunction);
     }
 
     static long doUnbalanced(
             long input,
             int rounds,
+            int totalBits,
             int sourceBits,
             int targetBits,
             boolean reverse,
             LongUnaryOperator roundFunction
     ) {
-        int nullBits = Long.SIZE - sourceBits - targetBits;
-        long nullMask = 0xffff_ffff_ffff_ffffL >>> sourceBits >>> targetBits;
-        long sourceMask = 0xffff_ffff_ffff_ffffL >>> nullBits >>> targetBits;
-        long targetMask = 0xffff_ffff_ffff_ffffL >>> nullBits >>> sourceBits;
+        long totalMask = 0xffff_ffff_ffff_ffffL >>> (Long.SIZE - totalBits);
+        int nullBits = totalBits - sourceBits - targetBits;
+        long nullMask = totalMask >>> sourceBits >>> targetBits;
+        long sourceMask = totalMask >>> nullBits >>> targetBits;
+        long targetMask = totalMask >>> nullBits >>> sourceBits;
+
+        if ((input & ~totalMask) != 0) {
+            throw new IllegalArgumentException();
+        }
 
         for (int i = 0; i < rounds; i++) {
             long a = input >>> targetBits >>> nullBits;

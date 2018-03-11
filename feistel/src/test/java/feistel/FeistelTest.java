@@ -8,8 +8,20 @@ import java.util.stream.LongStream;
 
 import static feistel.Feistel.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public final class FeistelTest {
+
+    @Test
+    public void isPermutation16() {
+        int count = 1 << 16;
+        assertEquals(count, LongStream
+                .range(0, count)
+                .map(i -> doUnbalanced(i, 3, 16, 8, 8, false, (value) -> value * 11))
+                .distinct()
+                .peek(i -> assertTrue(String.valueOf(i), i >= 0 && i < count))
+                .count());
+    }
 
     @Test
     public void isPermutation() {
@@ -25,17 +37,6 @@ public final class FeistelTest {
     }
 
     @Test
-    public void isPermutationl() {
-        long count = 1_000_000;
-        assertEquals(count, LongStream
-                .generate(ThreadLocalRandom.current()::nextLong)
-                .limit(count)
-                .map(l -> balanced(l, 4, value -> value * 11))
-                .distinct()
-                .count());
-    }
-
-    @Test
     public void isPermutationUnbalanced() {
         int step = 3231;
         long count = (1L << 32) / step;
@@ -45,6 +46,15 @@ public final class FeistelTest {
                 .map(i -> unbalanced(i, 4, 15, 17, value -> value * 11))
                 .distinct()
                 .count());
+    }
+
+    @Test
+    public void canBeReversed16() {
+        for (int i = 0; i < 1 << 16; i++) {
+            long j = doUnbalanced(i, 4, 16, 8, 8, false, (value) -> value * 31);
+            long k = doUnbalanced(j, 4, 16, 8, 8, true, (value) -> value * 31);
+            assertEquals(i, k);
+        }
     }
 
     @Test
@@ -74,8 +84,8 @@ public final class FeistelTest {
         int targetBits = 17;
         LongUnaryOperator roundFunction = (value) -> value * 31;
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            long output = doUnbalanced(i, rounds, sourceBits, targetBits, false, roundFunction);
-            long inverse = doUnbalanced(output, rounds, targetBits, sourceBits, true, roundFunction);
+            long output = doUnbalanced(i, rounds, 64, sourceBits, targetBits, false, roundFunction);
+            long inverse = doUnbalanced(output, rounds, 64, targetBits, sourceBits, true, roundFunction);
             assertEquals(i, inverse);
         }
     }
