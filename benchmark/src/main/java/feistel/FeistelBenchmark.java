@@ -1,6 +1,5 @@
-package feistel.benchmark;
+package feistel;
 
-import feistel.Feistel;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;

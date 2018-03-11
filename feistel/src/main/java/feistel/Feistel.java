@@ -7,7 +7,7 @@ public final class Feistel {
     private Feistel() {
     }
 
-    public static long unbalanced(
+    static long unbalanced(
             long input,
             int rounds,
             int sourceBits,
@@ -55,11 +55,7 @@ public final class Feistel {
         return input;
     }
 
-    public static long compute(long input, int rounds, LongUnaryOperator roundFunction) {
-        return balanced(input, rounds, roundFunction);
-    }
-
-    public static long balanced(long input, int rounds, LongUnaryOperator roundFunction) {
+    static long balanced(long input, int rounds, LongUnaryOperator roundFunction) {
         long a = input >>> 32;
         long b = input & 0xffff_ffffL;
         for (int i = 0; i < rounds; i++) {
@@ -71,18 +67,18 @@ public final class Feistel {
         return (b << 32) | a;
     }
 
-    public static LongUnaryOperator compute(int rounds, LongUnaryOperator roundFunction) {
-        return input -> compute(input, rounds, roundFunction);
+    static LongUnaryOperator compute(int rounds, LongUnaryOperator roundFunction) {
+        return input -> balanced(input, rounds, roundFunction);
     }
 
-    public static final class OfLong implements LongUnaryOperator {
+    static final class OfLong implements LongUnaryOperator {
 
         private final int rounds;
         private final int sourceBits;
         private final int targetBits;
         private final LongUnaryOperator roundFunction;
 
-        public OfLong(int rounds, int sourceBits, int targetBits, LongUnaryOperator roundFunction) {
+        OfLong(int rounds, int sourceBits, int targetBits, LongUnaryOperator roundFunction) {
             this.rounds = rounds;
             this.sourceBits = sourceBits;
             this.targetBits = targetBits;
