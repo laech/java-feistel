@@ -4,9 +4,90 @@ import java.math.BigInteger;
 import java.util.function.LongUnaryOperator;
 import java.util.function.UnaryOperator;
 
-public final class Feistel {
+import static java.util.Objects.requireNonNull;
 
-    private Feistel() {
+public interface Feistel<T> extends UnaryOperator<T> {
+
+    @Override
+    T apply(T input);
+
+    Feistel<T> reversed();
+
+    interface OfLong extends Feistel<Long>, LongUnaryOperator {
+
+        @Override
+        OfLong reversed();
+
+        @Override
+        long applyAsLong(long input);
+
+        @Override
+        default Long apply(Long input) {
+            return applyAsLong(input);
+        }
+    }
+
+    @FunctionalInterface
+    interface RoundFunction<T> {
+
+        T apply(int round, T input);
+
+        static <T> RoundFunction<T> identity() {
+            return (i, t) -> t;
+        }
+
+        @FunctionalInterface
+        interface OfLong extends RoundFunction<Long> {
+
+            long applyAsLong(int round, long input);
+
+            @Override
+            default Long apply(int round, Long input) {
+                return applyAsLong(round, input);
+            }
+
+            static OfLong identity() {
+                return (i, t) -> t;
+            }
+        }
+    }
+
+    static Feistel<BigInteger> numeric(int rounds, BigInteger m, BigInteger n, RoundFunction<BigInteger> f) {
+
+        if (rounds < 0) {
+            throw new IllegalArgumentException("rounds=" + rounds);
+        }
+        requireNonNull(m);
+        requireNonNull(n);
+        requireNonNull(f);
+
+        UnaryOperator<BigInteger> forward = input -> {
+            if (input.compareTo(BigInteger.ZERO) < 0) {
+                throw new IllegalArgumentException(input.toString());
+            }
+            for (int i = 0; i < rounds; i++) {
+                BigInteger a = input.divide(n);
+                BigInteger b = input.remainder(n);
+                BigInteger w = a.add(f.apply(i, b)).remainder(m);
+                input = m.multiply(b).add(w);
+            }
+            return input;
+        };
+
+        UnaryOperator<BigInteger> backward = input -> {
+            if (input.compareTo(BigInteger.ZERO) < 0) {
+                throw new IllegalArgumentException(input.toString());
+            }
+            for (int i = rounds - 1; i >= 0; i--) {
+                BigInteger w = input.remainder(m);
+                BigInteger b = input.divide(m);
+                BigInteger a = w.subtract(f.apply(i, b)).remainder(m);
+                input = n.multiply(a).add(b);
+            }
+            return input;
+        };
+
+        return new FeistelImpl<>(forward, backward);
     }
 
     static BigInteger numeric(BigInteger input, int rounds, BigInteger m, BigInteger n, UnaryOperator<BigInteger> roundFunction) {
@@ -109,31 +190,25 @@ public final class Feistel {
     static LongUnaryOperator compute(int rounds, LongUnaryOperator roundFunction) {
         return input -> balanced(input, rounds, roundFunction);
     }
+}
 
-    static final class OfLong implements LongUnaryOperator {
+final class FeistelImpl<T> implements Feistel<T> {
 
-        private final int rounds;
-        private final int sourceBits;
-        private final int targetBits;
-        private final LongUnaryOperator roundFunction;
+    private final UnaryOperator<T> forward;
+    private final UnaryOperator<T> backward;
 
-        OfLong(int rounds, int sourceBits, int targetBits, LongUnaryOperator roundFunction) {
-            this.rounds = rounds;
-            this.sourceBits = sourceBits;
-            this.targetBits = targetBits;
-            this.roundFunction = roundFunction;
-        }
+    FeistelImpl(UnaryOperator<T> forward, UnaryOperator<T> backward) {
+        this.forward = requireNonNull(forward);
+        this.backward = requireNonNull(backward);
+    }
 
-        @Override
-        public long applyAsLong(long input) {
-            return unbalanced(input, rounds, sourceBits, targetBits, roundFunction);
-        }
+    @Override
+    public T apply(T input) {
+        return forward.apply(input);
+    }
 
-        public OfLong reversed() {
-            if (sourceBits == targetBits && sourceBits + targetBits == Integer.SIZE) {
-                return this;
-            }
-            return new OfLong(rounds, targetBits, sourceBits, roundFunction);
-        }
+    @Override
+    public Feistel<T> reversed() {
+        return new FeistelImpl<>(backward, forward);
     }
 }
