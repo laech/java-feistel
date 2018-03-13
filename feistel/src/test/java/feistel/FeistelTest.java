@@ -24,6 +24,32 @@ public final class FeistelTest {
     }
 
     @Test
+    public void isPermutationNumeric() {
+        int m = 320;
+        int n = 200;
+        int count = m * n;
+        assertEquals(count, LongStream
+                .range(0, count)
+                .map(i -> numeric(i, 7, m, n, (value) -> value * 11))
+                .distinct()
+                .peek(i -> assertTrue(String.valueOf(i), i >= 0 && i < count))
+                .count());
+    }
+
+    @Test
+    public void isPermutationNumeric2() {
+        int a = 320;
+        int b = 200;
+        int count = a * b;
+        assertEquals(count, LongStream
+                .range(0, count)
+                .map(i -> numeric2(i, 7, a, b, (value) -> value * 11))
+                .distinct()
+                .peek(i -> assertTrue(String.valueOf(i), i >= 0 && i < count))
+                .count());
+    }
+
+    @Test
     public void isPermutation() {
         LongUnaryOperator feistel = compute(3, (value) -> value * 11);
         int step = 7231;

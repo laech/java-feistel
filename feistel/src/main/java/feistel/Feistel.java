@@ -7,6 +7,28 @@ public final class Feistel {
     private Feistel() {
     }
 
+    static long numeric(long input, int rounds, long m, long n, LongUnaryOperator roundFunction) {
+        for (int i = 0; i < rounds; i++) {
+            long a = input / n;
+            long b = input % n;
+            input = m * b + (a + roundFunction.applyAsLong(b)) % m;
+        }
+        return input;
+    }
+
+    static long numeric2(long input, int rounds, long a, long b, LongUnaryOperator roundFunction) {
+        long l = input / b;
+        long r = input % b;
+        long s = 1;
+        for (int i = 1; i <= rounds; i++) {
+            s = i % 2 != 0 ? a : b;
+            long l_ = l;
+            l = r;
+            r = (l_ + roundFunction.applyAsLong(r)) % s;
+        }
+        return s * l + r;
+    }
+
     static long unbalanced(
             long input,
             int rounds,
