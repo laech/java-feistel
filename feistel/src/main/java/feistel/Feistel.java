@@ -1,10 +1,21 @@
 package feistel;
 
+import java.math.BigInteger;
 import java.util.function.LongUnaryOperator;
+import java.util.function.UnaryOperator;
 
 public final class Feistel {
 
     private Feistel() {
+    }
+
+    static BigInteger numeric(BigInteger input, int rounds, BigInteger m, BigInteger n, UnaryOperator<BigInteger> roundFunction) {
+        for (int i = 0; i < rounds; i++) {
+            BigInteger a = input.divide(n);
+            BigInteger b = input.remainder(n);
+            input = m.multiply(b).add(a.add(roundFunction.apply(b)).remainder(m));
+        }
+        return input;
     }
 
     static long numeric(long input, int rounds, long m, long n, LongUnaryOperator roundFunction) {

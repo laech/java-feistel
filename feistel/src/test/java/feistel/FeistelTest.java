@@ -2,6 +2,7 @@ package feistel;
 
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.LongUnaryOperator;
 import java.util.stream.LongStream;
@@ -20,6 +21,22 @@ public final class FeistelTest {
                 .map(i -> doUnbalanced(i, 3, 16, 8, 8, false, (value) -> value * 11))
                 .distinct()
                 .peek(i -> assertTrue(String.valueOf(i), i >= 0 && i < count))
+                .count());
+    }
+
+    @Test
+    public void isPermutationNumericBigInteger() {
+        BigInteger m = BigInteger.valueOf(320);
+        BigInteger n = BigInteger.valueOf(200);
+        BigInteger count = m.multiply(n);
+        assertEquals(count.longValue(), LongStream
+                .range(0, count.longValue())
+                .mapToObj(BigInteger::valueOf)
+                .map(i -> numeric(i, 7, m, n, (value) -> value.multiply(BigInteger.valueOf(11))))
+                .distinct()
+                .peek(i -> assertTrue(String.valueOf(i),
+                        i.compareTo(BigInteger.ZERO) >= 0 &&
+                                i.compareTo(count) < 0))
                 .count());
     }
 
