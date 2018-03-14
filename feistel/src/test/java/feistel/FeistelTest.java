@@ -18,7 +18,7 @@ public final class FeistelTest {
         int count = 1 << 16;
         assertEquals(count, LongStream
                 .range(0, count)
-                .map(i -> doUnbalanced(i, 3, 16, 8, 8, false, (value) -> value * 11))
+                .map(Feistel.binary(3, 16, 8, 8, (round, value) -> value * 11))
                 .distinct()
                 .peek(i -> assertTrue(String.valueOf(i), i >= 0 && i < count))
                 .count());
@@ -86,17 +86,17 @@ public final class FeistelTest {
         assertEquals(count, LongStream
                 .iterate(Integer.MIN_VALUE, i -> i + step)
                 .limit(count)
-                .map(i -> unbalanced(i, 4, 15, 17, value -> value * 11))
+                .map(Feistel.binary(4, 64, 15, 17, (round, value) -> value * 11))
                 .distinct()
                 .count());
     }
 
     @Test
     public void canBeReversed16() {
+        Feistel.OfLong forward = Feistel.binary(4, 16, 8, 8, (round, value) -> value * 31);
+        Feistel.OfLong backward = forward.reversed();
         for (int i = 0; i < 1 << 16; i++) {
-            long j = doUnbalanced(i, 4, 16, 8, 8, false, (value) -> value * 31);
-            long k = doUnbalanced(j, 4, 16, 8, 8, true, (value) -> value * 31);
-            assertEquals(i, k);
+            assertEquals(i, backward.applyAsLong(forward.applyAsLong(i)));
         }
     }
 
@@ -122,14 +122,11 @@ public final class FeistelTest {
 
     @Test
     public void canBeReversedUnbalanced() {
-        int rounds = 11;
-        int sourceBits = 3;
-        int targetBits = 17;
-        LongUnaryOperator roundFunction = (value) -> value * 31;
+        RoundFunction.OfLong f = (round, value) -> value * 31;
+        Feistel.OfLong forward = Feistel.binary(11, 64, 3, 17, f);
+        Feistel.OfLong backward = forward.reversed();
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            long output = doUnbalanced(i, rounds, 64, sourceBits, targetBits, false, roundFunction);
-            long inverse = doUnbalanced(output, rounds, 64, targetBits, sourceBits, true, roundFunction);
-            assertEquals(i, inverse);
+            assertEquals(i, backward.applyAsLong(forward.applyAsLong(i)));
         }
     }
 

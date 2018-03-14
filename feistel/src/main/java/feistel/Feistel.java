@@ -25,6 +25,8 @@ public interface Feistel<T> extends UnaryOperator<T> {
         default Long apply(Long input) {
             return applyAsLong(input);
         }
+
+        // TODO conflict Function.compose, LongUnaryOperator.compose etc
     }
 
     @FunctionalInterface
@@ -124,58 +126,21 @@ public interface Feistel<T> extends UnaryOperator<T> {
         return s * l + r;
     }
 
-    static long unbalanced(
-            long input,
-            int rounds,
-            int sourceBits,
-            int targetBits,
-            LongUnaryOperator roundFunction
-    ) {
-        if (sourceBits < 0
-                || targetBits < 0
-                || targetBits + sourceBits > Long.SIZE) {
-            throw new IllegalArgumentException();
-        }
-        return sourceBits == targetBits && sourceBits == 32
-                ? balanced(input, rounds, roundFunction)
-                : doUnbalanced(input, rounds, 64, sourceBits, targetBits, false, roundFunction);
-    }
-
-    static long doUnbalanced(
-            long input,
+    static OfLong binary(
             int rounds,
             int totalBits,
             int sourceBits,
             int targetBits,
-            boolean reverse,
-            LongUnaryOperator roundFunction
+            RoundFunction.OfLong f
     ) {
-        long totalMask = 0xffff_ffff_ffff_ffffL >>> (Long.SIZE - totalBits);
-        int nullBits = totalBits - sourceBits - targetBits;
-        long nullMask = totalMask >>> sourceBits >>> targetBits;
-        long sourceMask = totalMask >>> nullBits >>> targetBits;
-        long targetMask = totalMask >>> nullBits >>> sourceBits;
-
-        if ((input & ~totalMask) != 0) {
-            throw new IllegalArgumentException();
-        }
-
-        for (int i = 0; i < rounds; i++) {
-            long a = input >>> targetBits >>> nullBits;
-            long n = input >>> targetBits & nullMask;
-            long b = input & targetMask;
-
-            if (reverse) {
-                input = ((b ^ roundFunction.applyAsLong(a) & targetMask) << nullBits << sourceBits
-                        | n << sourceBits
-                        | a);
-            } else {
-                input = ((b << nullBits << sourceBits)
-                        | n << sourceBits
-                        | a ^ roundFunction.applyAsLong(b) & sourceMask);
-            }
-        }
-        return input;
+        return new UnbalancedFeistelOfLong(
+                rounds,
+                totalBits,
+                sourceBits,
+                targetBits,
+                false,
+                f
+        );
     }
 
     static long balanced(long input, int rounds, LongUnaryOperator roundFunction) {

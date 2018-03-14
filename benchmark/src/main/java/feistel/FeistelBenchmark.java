@@ -1,5 +1,6 @@
 package feistel;
 
+import feistel.Feistel.RoundFunction;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
@@ -23,6 +24,15 @@ public class FeistelBenchmark {
     @Param("7")
     private int rounds;
 
+    private Feistel.OfLong unbalanced;
+    private Feistel.OfLong unbalancedReversed;
+
+    @Setup
+    public void setup() {
+        unbalanced = new UnbalancedFeistelOfLong(
+                rounds, 64, 32, 32, false, RoundFunction.OfLong.identity());
+        unbalancedReversed = unbalanced.reversed();
+    }
 
     @Benchmark
     public long balanced() {
@@ -30,8 +40,13 @@ public class FeistelBenchmark {
     }
 
     @Benchmark
+    public long unbalancedReversed() {
+        return unbalancedReversed.applyAsLong(input);
+    }
+
+    @Benchmark
     public long unbalanced() {
-        return Feistel.unbalanced(input, rounds, 32, 32, RF);
+        return unbalanced.applyAsLong(input);
     }
 
     public static void main(String[] args) throws Exception {
