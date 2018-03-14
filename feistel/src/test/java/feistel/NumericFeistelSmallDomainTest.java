@@ -33,7 +33,8 @@ public final class NumericFeistelSmallDomainTest {
 
     @Parameters(name = "{0}, {1}, {2}")
     public static Object[][] data() {
-        RoundFunction<BigInteger> f = (round, value) -> value.multiply(BigInteger.valueOf(31)).shiftLeft(round);
+        RoundFunction<BigInteger> f = (round, value) ->
+                value.multiply(BigInteger.valueOf(31)).shiftLeft(round);
         return new Object[][]{
                 {0, 0, 0, f},
                 {0, 0, 1, f},
@@ -45,11 +46,13 @@ public final class NumericFeistelSmallDomainTest {
                 {7, 0, 200, f},
                 {7, 320, 0, f},
                 {7, 320, 200, f},
+                {11, 320, 200, f},
+                {12, 99, 99, f},
         };
     }
 
     @Test
-    public void isPermutation16() {
+    public void isPermutation() {
         BigInteger count = m.multiply(n);
         assertEquals(count.longValue(), LongStream
                 .range(0, count.longValue())
@@ -57,8 +60,9 @@ public final class NumericFeistelSmallDomainTest {
                 .map(feistel)
                 .distinct()
                 .peek(i -> {
-                    assertTrue(String.valueOf(i), i.compareTo(ZERO) >= 0);
-                    assertTrue(String.valueOf(i), i.compareTo(count) < 0);
+                    String message = String.valueOf(i);
+                    assertTrue(message, i.compareTo(ZERO) >= 0);
+                    assertTrue(message, i.compareTo(count) < 0);
                 })
                 .count());
     }
@@ -68,8 +72,9 @@ public final class NumericFeistelSmallDomainTest {
         Feistel<BigInteger> reversed = feistel.reversed();
         for (BigInteger i = ZERO, end = m.multiply(n); i.compareTo(end) < 0; i = i.add(ONE)) {
             BigInteger j = feistel.apply(i);
-            assertTrue(String.valueOf(j), j.compareTo(ZERO) >= 0);
-            assertTrue(String.valueOf(j), j.compareTo(end) < 0);
+            String message = String.valueOf(j);
+            assertTrue(message, j.compareTo(ZERO) >= 0);
+            assertTrue(message, j.compareTo(end) < 0);
             assertEquals(i, reversed.apply(j));
         }
     }

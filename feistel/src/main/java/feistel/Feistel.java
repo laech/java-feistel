@@ -52,39 +52,41 @@ public interface Feistel<T> extends UnaryOperator<T> {
         }
     }
 
-    static Feistel<BigInteger> numeric(int rounds, BigInteger m, BigInteger n, RoundFunction<BigInteger> f) {
+    static Feistel<BigInteger> numeric(int rounds, BigInteger a, BigInteger b, RoundFunction<BigInteger> f) {
 
         if (rounds < 0) {
             throw new IllegalArgumentException("rounds=" + rounds);
         }
-        requireNonNull(m);
-        requireNonNull(n);
+        requireNonNull(a);
+        requireNonNull(b);
         requireNonNull(f);
 
-        UnaryOperator<BigInteger> forward = input -> {
-            if (input.compareTo(BigInteger.ZERO) < 0) {
-                throw new IllegalArgumentException(input.toString());
+        // TODO check a x b, check negative
+
+        UnaryOperator<BigInteger> forward = x -> {
+            if (x.compareTo(BigInteger.ZERO) < 0) {
+                throw new IllegalArgumentException(x.toString());
             }
             for (int i = 0; i < rounds; i++) {
-                BigInteger a = input.divide(n);
-                BigInteger b = input.remainder(n);
-                BigInteger w = a.add(f.apply(i, b)).remainder(m);
-                input = m.multiply(b).add(w);
+                BigInteger l = x.divide(b);
+                BigInteger r = x.mod(b);
+                BigInteger w = l.add(f.apply(i, r)).mod(a);
+                x = a.multiply(r).add(w);
             }
-            return input;
+            return x;
         };
 
-        UnaryOperator<BigInteger> backward = input -> {
-            if (input.compareTo(BigInteger.ZERO) < 0) {
-                throw new IllegalArgumentException(input.toString());
+        UnaryOperator<BigInteger> backward = y -> {
+            if (y.compareTo(BigInteger.ZERO) < 0) {
+                throw new IllegalArgumentException(y.toString());
             }
             for (int i = rounds - 1; i >= 0; i--) {
-                BigInteger w = input.remainder(m);
-                BigInteger b = input.divide(m);
-                BigInteger a = w.subtract(f.apply(i, b)).remainder(m);
-                input = n.multiply(a).add(b);
+                BigInteger w = y.mod(a);
+                BigInteger r = y.divide(a);
+                BigInteger l = w.subtract(f.apply(i, r)).mod(a);
+                y = b.multiply(l).add(r);
             }
-            return input;
+            return y;
         };
 
         return new FeistelImpl<>(forward, backward);
@@ -101,8 +103,9 @@ public interface Feistel<T> extends UnaryOperator<T> {
 
     static long numeric(long input, int rounds, long m, long n, LongUnaryOperator roundFunction) {
         for (int i = 0; i < rounds; i++) {
+            // TODO use unsigned ops
             long a = input / n;
-            long b = input % n;
+            long b = input % n; // TODO use non negative mod
             input = m * b + (a + roundFunction.applyAsLong(b)) % m;
         }
         return input;
