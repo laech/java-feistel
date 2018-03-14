@@ -68,7 +68,7 @@ public final class FeistelTest {
 
     @Test
     public void isPermutation() {
-        LongUnaryOperator feistel = compute(3, (value) -> value * 11);
+        LongUnaryOperator feistel = new BalancedFeistelOfLong(3, false, (round, value) -> value * 11);
         int step = 7231;
         long count = (1L << 32) / step;
         assertEquals(count, LongStream
@@ -102,20 +102,22 @@ public final class FeistelTest {
 
     @Test
     public void canBeReversedBalanced() {
-        LongUnaryOperator feistel = compute(4, (value) -> value * 31);
-        LongUnaryOperator inverse = feistel.compose(feistel);
+        Feistel.OfLong feistel = new BalancedFeistelOfLong(4, false, (round, value) -> value * 31);
+        Feistel.OfLong inverse = feistel.reversed();
         for (long i = Integer.MIN_VALUE; i <= Integer.MAX_VALUE; i += 321) {
-            assertEquals(i, inverse.applyAsLong((int) i));
+            assertEquals(i, inverse.applyAsLong(feistel.applyAsLong(i)));
         }
     }
 
     @Test
     public void canBeReversedBalancedl() {
+        Feistel.OfLong forward = new BalancedFeistelOfLong(5, false, (round, value) -> value * 31);
+        Feistel.OfLong backward = forward.reversed();
         for (long i = 0; i <= 10_000_000; i++) {
             long in = ThreadLocalRandom.current().nextLong();
             long out = in;
-            out = balanced(out, 5, value -> value * 31);
-            out = balanced(out, 5, value -> value * 31);
+            out = forward.apply(out);
+            out = backward.apply(out);
             assertEquals(in, out);
         }
     }

@@ -7,7 +7,6 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.LongUnaryOperator;
 
 @Fork(1)
 @State(Scope.Benchmark)
@@ -16,14 +15,14 @@ import java.util.function.LongUnaryOperator;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FeistelBenchmark {
 
-    private static final LongUnaryOperator RF = LongUnaryOperator.identity();
-
     @Param("100001")
     private long input;
 
     @Param("7")
     private int rounds;
 
+    private Feistel.OfLong balanced;
+    private Feistel.OfLong balancedReversed;
     private Feistel.OfLong unbalanced;
     private Feistel.OfLong unbalancedReversed;
 
@@ -32,11 +31,20 @@ public class FeistelBenchmark {
         unbalanced = new UnbalancedFeistelOfLong(
                 rounds, 64, 32, 32, false, RoundFunction.OfLong.identity());
         unbalancedReversed = unbalanced.reversed();
+
+        balanced = new BalancedFeistelOfLong(
+                rounds, false, RoundFunction.OfLong.identity());
+        balancedReversed = balanced.reversed();
     }
 
     @Benchmark
     public long balanced() {
-        return Feistel.balanced(input, rounds, RF);
+        return balanced.applyAsLong(input);
+    }
+
+    @Benchmark
+    public long balancedReversed() {
+        return balancedReversed.applyAsLong(input);
     }
 
     @Benchmark

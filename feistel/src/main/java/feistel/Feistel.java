@@ -142,22 +142,6 @@ public interface Feistel<T> extends UnaryOperator<T> {
                 f
         );
     }
-
-    static long balanced(long input, int rounds, LongUnaryOperator roundFunction) {
-        long b = input >>> 32;
-        long a = input & 0xffff_ffffL;
-        for (int i = 0; i < rounds; i++) {
-            long F = roundFunction.applyAsLong(b) & 0xff_ff_ff_ffL;
-            long a_ = a;
-            a = b;
-            b = a_ ^ F;
-        }
-        return (a << 32) | b;
-    }
-
-    static LongUnaryOperator compute(int rounds, LongUnaryOperator roundFunction) {
-        return input -> balanced(input, rounds, roundFunction);
-    }
 }
 
 final class FeistelImpl<T> implements Feistel<T> {
