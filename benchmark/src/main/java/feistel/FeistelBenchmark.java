@@ -16,26 +16,22 @@ import java.util.function.LongUnaryOperator;
 public class FeistelBenchmark {
 
     private static final LongUnaryOperator RF = LongUnaryOperator.identity();
-    private static final int ROUNDS = 7;
-
-    private static final Feistel.OfLong ofLong = new Feistel.OfLong(ROUNDS, 32, 32, RF);
 
     @Param("100001")
     private long input;
 
+    @Param("7")
+    private int rounds;
+
+
     @Benchmark
     public long balanced() {
-        return Feistel.balanced(input, ROUNDS, RF);
+        return Feistel.balanced(input, rounds, RF);
     }
 
     @Benchmark
     public long unbalanced() {
-        return Feistel.unbalanced(input, ROUNDS, 32, 32, RF);
-    }
-
-    @Benchmark
-    public long unbalancedOfLong() {
-        return ofLong.applyAsLong(input);
+        return Feistel.unbalanced(input, rounds, 32, 32, RF);
     }
 
     public static void main(String[] args) throws Exception {
