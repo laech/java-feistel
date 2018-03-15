@@ -73,4 +73,40 @@ final class FeistelOfLongUnbalanced implements Feistel.OfLong {
                 f
         );
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (null == o || getClass() != o.getClass()) return false;
+        FeistelOfLongUnbalanced that = (FeistelOfLongUnbalanced) o;
+        return rounds == that.rounds &&
+                totalBits == that.totalBits &&
+                sourceBits == that.sourceBits &&
+                targetBits == that.targetBits &&
+                reverse == that.reverse &&
+                f.equals(that.f);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rounds;
+        result = 31 * result + totalBits;
+        result = 31 * result + sourceBits;
+        result = 31 * result + targetBits;
+        result = 31 * result + (reverse ? 1 : 0);
+        result = 31 * result + f.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                "{rounds=" + rounds +
+                ", totalBits=" + totalBits +
+                ", sourceBits=" + sourceBits +
+                ", targetBits=" + targetBits +
+                ", reverse=" + reverse +
+                ", function=" + f +
+                '}';
+    }
 }

@@ -32,4 +32,31 @@ final class FeistelOfLongBalanced implements Feistel.OfLong {
     public FeistelOfLongBalanced reversed() {
         return new FeistelOfLongBalanced(rounds, !reversed, f);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (null == o || getClass() != o.getClass()) return false;
+        FeistelOfLongBalanced that = (FeistelOfLongBalanced) o;
+        return rounds == that.rounds &&
+                reversed == that.reversed &&
+                f.equals(that.f);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rounds;
+        result = 31 * result + (reversed ? 1 : 0);
+        result = 31 * result + f.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+                + "{rounds=" + rounds
+                + ", reversed=" + reversed
+                + ", function=" + f
+                + "}";
+    }
 }
