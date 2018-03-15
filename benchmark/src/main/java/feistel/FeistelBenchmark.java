@@ -28,11 +28,11 @@ public class FeistelBenchmark {
 
     @Setup
     public void setup() {
-        unbalanced = new UnbalancedFeistelOfLong(
+        unbalanced = new FeistelOfLongUnbalanced(
                 rounds, 64, 32, 32, false, RoundFunction.OfLong.identity());
         unbalancedReversed = unbalanced.reversed();
 
-        balanced = new BalancedFeistelOfLong(
+        balanced = new FeistelOfLongBalanced(
                 rounds, false, RoundFunction.OfLong.identity());
         balancedReversed = balanced.reversed();
     }

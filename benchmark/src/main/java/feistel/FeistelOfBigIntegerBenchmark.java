@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-public class BigIntegerFeistelBenchmark {
+public class FeistelOfBigIntegerBenchmark {
 
     @Param("100001")
     private int x;
@@ -50,7 +50,7 @@ public class BigIntegerFeistelBenchmark {
 
     public static void main(String[] args) throws Exception {
         Options options = new OptionsBuilder()
-                .include(BigIntegerFeistelBenchmark.class.getName())
+                .include(FeistelOfBigIntegerBenchmark.class.getName())
                 .build();
         new Runner(options).run();
     }

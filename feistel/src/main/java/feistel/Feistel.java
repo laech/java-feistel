@@ -133,7 +133,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
             int targetBits,
             RoundFunction.OfLong f
     ) {
-        return new UnbalancedFeistelOfLong(
+        return new FeistelOfLongUnbalanced(
                 rounds,
                 totalBits,
                 sourceBits,
@@ -141,26 +141,5 @@ public interface Feistel<T> extends UnaryOperator<T> {
                 false,
                 f
         );
-    }
-}
-
-final class FeistelImpl<T> implements Feistel<T> {
-
-    private final UnaryOperator<T> forward;
-    private final UnaryOperator<T> backward;
-
-    FeistelImpl(UnaryOperator<T> forward, UnaryOperator<T> backward) {
-        this.forward = requireNonNull(forward);
-        this.backward = requireNonNull(backward);
-    }
-
-    @Override
-    public T apply(T input) {
-        return forward.apply(input);
-    }
-
-    @Override
-    public Feistel<T> reversed() {
-        return new FeistelImpl<>(backward, forward);
     }
 }
