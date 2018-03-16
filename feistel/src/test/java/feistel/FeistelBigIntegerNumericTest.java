@@ -14,33 +14,49 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class FeistelBigIntegerNumericTest {
 
-    private static Stream<Params> smallDomain() {
-        RoundFunction<BigInteger> f = (round, value) ->
-                value.multiply(BigInteger.valueOf(31)).shiftLeft(round);
+    private static Stream<FeistelBigIntegerNumericBase> smallDomain() {
+        BigInteger _31 = BigInteger.valueOf(31);
+        RoundFunction<BigInteger> f = (r, v) -> v.multiply(_31).shiftLeft(r);
         return Stream.of(
-                new Params(0, 0, 0, f),
-                new Params(0, 0, 1, f),
-                new Params(0, 1, 1, f),
-                new Params(1, 0, 0, f),
-                new Params(1, 0, 1, f),
-                new Params(1, 1, 1, f),
-                new Params(11, 1, 1, f),
-                new Params(7, 0, 200, f),
-                new Params(7, 320, 0, f),
-                new Params(7, 320, 200, f),
-                new Params(11, 320, 200, f),
-                new Params(12, 99, 99, f)
+                new FeistelBigIntegerNumeric1(0, big(0), big(0), false, f),
+                new FeistelBigIntegerNumeric2(0, big(0), big(0), false, f),
+                new FeistelBigIntegerNumeric1(0, big(0), big(1), false, f),
+                new FeistelBigIntegerNumeric2(0, big(0), big(1), false, f),
+                new FeistelBigIntegerNumeric1(0, big(1), big(1), false, f),
+                new FeistelBigIntegerNumeric2(0, big(1), big(1), false, f),
+                new FeistelBigIntegerNumeric1(1, big(0), big(0), false, f),
+                new FeistelBigIntegerNumeric2(1, big(0), big(0), false, f),
+                new FeistelBigIntegerNumeric1(1, big(0), big(1), false, f),
+                new FeistelBigIntegerNumeric2(1, big(0), big(1), false, f),
+                new FeistelBigIntegerNumeric1(1, big(1), big(1), false, f),
+                new FeistelBigIntegerNumeric2(1, big(1), big(1), false, f),
+                new FeistelBigIntegerNumeric1(11, big(1), big(1), false, f),
+                new FeistelBigIntegerNumeric2(11, big(1), big(1), false, f),
+                new FeistelBigIntegerNumeric1(7, big(0), big(200), false, f),
+                new FeistelBigIntegerNumeric2(7, big(0), big(200), false, f),
+                new FeistelBigIntegerNumeric1(7, big(320), big(0), false, f),
+                new FeistelBigIntegerNumeric2(7, big(320), big(0), false, f),
+                new FeistelBigIntegerNumeric1(7, big(320), big(200), false, f),
+                new FeistelBigIntegerNumeric2(7, big(320), big(200), false, f),
+                new FeistelBigIntegerNumeric1(11, big(320), big(200), false, f),
+                new FeistelBigIntegerNumeric2(11, big(320), big(200), false, f),
+                new FeistelBigIntegerNumeric1(12, big(99), big(99), false, f),
+                new FeistelBigIntegerNumeric2(12, big(99), big(99), false, f)
         );
+    }
+
+    private static BigInteger big(long i) {
+        return BigInteger.valueOf(i);
     }
 
     @ParameterizedTest
     @MethodSource("smallDomain")
-    void isPermutation(Params params) {
-        BigInteger count = params.count;
+    void isPermutation(FeistelBigIntegerNumericBase feistel) {
+        BigInteger count = feistel.max.add(ONE);
         assertEquals(count.longValue(), LongStream
                 .range(0, count.longValue())
                 .mapToObj(BigInteger::valueOf)
-                .map(params.feistel)
+                .map(feistel)
                 .distinct()
                 .peek(i -> {
                     assertTrue(i.compareTo(ZERO) >= 0, () -> String.valueOf(i));
@@ -51,33 +67,13 @@ final class FeistelBigIntegerNumericTest {
 
     @ParameterizedTest
     @MethodSource("smallDomain")
-    void isReversible(Params params) {
-        Feistel<BigInteger> reversed = params.feistel.reversed();
-        BigInteger max = params.count;
-        for (BigInteger i = ZERO; i.compareTo(max) < 0; i = i.add(ONE)) {
-            BigInteger j = params.feistel.apply(i);
+    void isReversible(FeistelBigIntegerNumericBase feistel) {
+        Feistel<BigInteger> reversed = feistel.reversed();
+        for (BigInteger i = ZERO; i.compareTo(feistel.max) <= 0; i = i.add(ONE)) {
+            BigInteger j = feistel.apply(i);
             assertTrue(j.compareTo(ZERO) >= 0, () -> String.valueOf(j));
-            assertTrue(j.compareTo(max) < 0, () -> String.valueOf(j));
+            assertTrue(j.compareTo(feistel.max) <= 0, () -> String.valueOf(j));
             assertEquals(i, reversed.apply(j));
-        }
-    }
-
-    private static final class Params {
-        final int rounds;
-        final BigInteger a;
-        final BigInteger b;
-        final BigInteger count;
-        final RoundFunction<BigInteger> f;
-        final Feistel<BigInteger> feistel;
-
-        Params(int rounds, long a, long b, RoundFunction<BigInteger> f) {
-            this.rounds = rounds;
-            this.a = BigInteger.valueOf(a);
-            this.b = BigInteger.valueOf(b);
-            this.count = this.a.multiply(this.b);
-            this.f = f;
-            this.feistel = new FeistelBigIntegerNumeric(
-                    rounds, this.a, this.b, false, f);
         }
     }
 }

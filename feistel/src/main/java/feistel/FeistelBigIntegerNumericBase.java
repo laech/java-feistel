@@ -6,16 +6,16 @@ import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 import static java.util.Objects.requireNonNull;
 
-final class FeistelBigIntegerNumeric implements Feistel<BigInteger> {
+abstract class FeistelBigIntegerNumericBase implements Feistel<BigInteger> {
 
-    private final int rounds;
-    private final BigInteger a;
-    private final BigInteger b;
-    private final BigInteger max;
-    private final boolean reversed;
-    private final RoundFunction<BigInteger> f;
+    final int rounds;
+    final BigInteger a;
+    final BigInteger b;
+    final BigInteger max;
+    final boolean reversed;
+    final RoundFunction<BigInteger> f;
 
-    FeistelBigIntegerNumeric(
+    FeistelBigIntegerNumericBase(
             int rounds,
             BigInteger a,
             BigInteger b,
@@ -48,7 +48,7 @@ final class FeistelBigIntegerNumeric implements Feistel<BigInteger> {
     }
 
     @Override
-    public BigInteger apply(BigInteger input) {
+    public final BigInteger apply(BigInteger input) {
         if (input.compareTo(ZERO) < 0 || input.compareTo(max) > 0) {
             throw new IllegalArgumentException(
                     "input out of range (min=0, max=" + max + "): " + input);
@@ -58,29 +58,19 @@ final class FeistelBigIntegerNumeric implements Feistel<BigInteger> {
                 : applyForward(input);
     }
 
-    private BigInteger applyForward(BigInteger x) {
-        for (int i = 0; i < rounds; i++) {
-            BigInteger l = x.divide(b);
-            BigInteger r = x.mod(b);
-            BigInteger w = l.add(f.apply(i, r)).mod(a);
-            x = a.multiply(r).add(w);
-        }
-        return x;
-    }
+    abstract BigInteger applyForward(BigInteger x);
 
-    private BigInteger applyBackward(BigInteger y) {
-        for (int i = rounds - 1; i >= 0; i--) {
-            BigInteger w = y.mod(a);
-            BigInteger r = y.divide(a);
-            BigInteger l = w.subtract(f.apply(i, r)).mod(a);
-            y = b.multiply(l).add(r);
-        }
-        return y;
-    }
+    abstract BigInteger applyBackward(BigInteger y);
 
     @Override
-    public FeistelBigIntegerNumeric reversed() {
-        return new FeistelBigIntegerNumeric(
-                rounds, a, b, !reversed, f);
+    public String toString() {
+        return getClass().getSimpleName() +
+                "{rounds=" + rounds +
+                ", a=" + a +
+                ", b=" + b +
+                ", max=" + max +
+                ", reversed=" + reversed +
+                ", f=" + f +
+                '}';
     }
 }

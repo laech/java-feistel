@@ -13,10 +13,9 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@BenchmarkMode({Mode.Throughput, Mode.AverageTime})
 public class FeistelBigIntegerBenchmark {
 
-    @Param("100001")
+    @Param("62000")
     private int x;
 
     private BigInteger input;
@@ -30,23 +29,27 @@ public class FeistelBigIntegerBenchmark {
     @Param("200")
     private int b;
 
-    private Feistel<BigInteger> feistel;
+    private FeistelBigIntegerNumeric1 numeric1;
+    private FeistelBigIntegerNumeric2 numeric2;
 
     @Setup
     public void setup() {
         input = BigInteger.valueOf(x);
-        feistel = new FeistelBigIntegerNumeric(
-                rounds,
-                BigInteger.valueOf(a),
-                BigInteger.valueOf(b),
-                false,
-                (round, value) -> value
-        );
+        RoundFunction<BigInteger> f = (round, value) -> value;
+        BigInteger a_ = BigInteger.valueOf(this.a);
+        BigInteger b_ = BigInteger.valueOf(this.b);
+        numeric1 = new FeistelBigIntegerNumeric1(rounds, a_, b_, false, f);
+        numeric2 = new FeistelBigIntegerNumeric2(rounds, a_, b_, false, f);
     }
 
     @Benchmark
-    public BigInteger numeric() {
-        return feistel.apply(input);
+    public BigInteger numeric1() {
+        return numeric1.apply(input);
+    }
+
+    @Benchmark
+    public BigInteger numeric2() {
+        return numeric2.apply(input);
     }
 
     public static void main(String[] args) throws Exception {
