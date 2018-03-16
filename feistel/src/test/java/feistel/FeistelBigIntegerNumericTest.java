@@ -1,6 +1,5 @@
 package feistel;
 
-import feistel.Feistel.RoundFunction;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -13,7 +12,7 @@ import static java.math.BigInteger.ZERO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class FeistelOfBigIntegerNumericTest {
+final class FeistelBigIntegerNumericTest {
 
     private static Stream<Params> smallDomain() {
         RoundFunction<BigInteger> f = (round, value) ->
@@ -77,7 +76,7 @@ final class FeistelOfBigIntegerNumericTest {
             this.b = BigInteger.valueOf(b);
             this.count = this.a.multiply(this.b);
             this.f = f;
-            this.feistel = new FeistelOfBigIntegerNumeric(
+            this.feistel = new FeistelBigIntegerNumeric(
                     rounds, this.a, this.b, false, f);
         }
     }

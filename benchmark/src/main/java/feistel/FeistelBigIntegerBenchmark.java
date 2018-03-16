@@ -1,6 +1,5 @@
 package feistel;
 
-import feistel.Feistel.RoundFunction;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-public class FeistelOfBigIntegerBenchmark {
+public class FeistelBigIntegerBenchmark {
 
     @Param("100001")
     private int x;
@@ -36,11 +35,13 @@ public class FeistelOfBigIntegerBenchmark {
     @Setup
     public void setup() {
         input = BigInteger.valueOf(x);
-        feistel = Feistel.numeric(
+        feistel = new FeistelBigIntegerNumeric(
                 rounds,
                 BigInteger.valueOf(a),
                 BigInteger.valueOf(b),
-                RoundFunction.identity());
+                false,
+                (round, value) -> value
+        );
     }
 
     @Benchmark
@@ -50,7 +51,7 @@ public class FeistelOfBigIntegerBenchmark {
 
     public static void main(String[] args) throws Exception {
         Options options = new OptionsBuilder()
-                .include(FeistelOfBigIntegerBenchmark.class.getName())
+                .include(FeistelBigIntegerBenchmark.class.getName())
                 .build();
         new Runner(options).run();
     }

@@ -6,7 +6,7 @@ import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 import static java.util.Objects.requireNonNull;
 
-final class FeistelOfBigIntegerNumeric implements Feistel<BigInteger> {
+final class FeistelBigIntegerNumeric implements Feistel<BigInteger> {
 
     private final int rounds;
     private final BigInteger a;
@@ -15,7 +15,7 @@ final class FeistelOfBigIntegerNumeric implements Feistel<BigInteger> {
     private final boolean reversed;
     private final RoundFunction<BigInteger> f;
 
-    FeistelOfBigIntegerNumeric(
+    FeistelBigIntegerNumeric(
             int rounds,
             BigInteger a,
             BigInteger b,
@@ -79,8 +79,8 @@ final class FeistelOfBigIntegerNumeric implements Feistel<BigInteger> {
     }
 
     @Override
-    public FeistelOfBigIntegerNumeric reversed() {
-        return new FeistelOfBigIntegerNumeric(
+    public FeistelBigIntegerNumeric reversed() {
+        return new FeistelBigIntegerNumeric(
                 rounds, a, b, !reversed, f);
     }
 }

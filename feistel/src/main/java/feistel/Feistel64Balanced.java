@@ -2,13 +2,13 @@ package feistel;
 
 import static java.util.Objects.requireNonNull;
 
-final class FeistelOfLongBalanced implements Feistel.OfLong {
+final class Feistel64Balanced implements Feistel64 {
 
     private final int rounds;
     private final boolean reversed;
-    private final RoundFunction.OfLong f;
+    private final RoundFunction64 f;
 
-    FeistelOfLongBalanced(int rounds, boolean reversed, RoundFunction.OfLong f) {
+    Feistel64Balanced(int rounds, boolean reversed, RoundFunction64 f) {
         this.rounds = rounds;
         this.reversed = reversed;
         this.f = requireNonNull(f);
@@ -29,15 +29,15 @@ final class FeistelOfLongBalanced implements Feistel.OfLong {
     }
 
     @Override
-    public FeistelOfLongBalanced reversed() {
-        return new FeistelOfLongBalanced(rounds, !reversed, f);
+    public Feistel64Balanced reversed() {
+        return new Feistel64Balanced(rounds, !reversed, f);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (null == o || getClass() != o.getClass()) return false;
-        FeistelOfLongBalanced that = (FeistelOfLongBalanced) o;
+        Feistel64Balanced that = (Feistel64Balanced) o;
         return rounds == that.rounds &&
                 reversed == that.reversed &&
                 f.equals(that.f);

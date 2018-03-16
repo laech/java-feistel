@@ -2,22 +2,22 @@ package feistel;
 
 import static java.util.Objects.requireNonNull;
 
-final class FeistelOfLongUnbalanced implements Feistel.OfLong {
+final class Feistel64Unbalanced implements Feistel64 {
 
     private final int rounds;
     private final int totalBits;
     private final int sourceBits;
     private final int targetBits;
     private final boolean reverse;
-    private final RoundFunction.OfLong f;
+    private final RoundFunction64 f;
 
-    FeistelOfLongUnbalanced(
+    Feistel64Unbalanced(
             int rounds,
             int totalBits,
             int sourceBits,
             int targetBits,
             boolean reverse,
-            RoundFunction.OfLong f
+            RoundFunction64 f
     ) {
         this.rounds = rounds;
         this.totalBits = totalBits;
@@ -63,8 +63,8 @@ final class FeistelOfLongUnbalanced implements Feistel.OfLong {
     }
 
     @Override
-    public FeistelOfLongUnbalanced reversed() {
-        return new FeistelOfLongUnbalanced(
+    public Feistel64Unbalanced reversed() {
+        return new Feistel64Unbalanced(
                 rounds,
                 totalBits,
                 targetBits,
@@ -78,7 +78,7 @@ final class FeistelOfLongUnbalanced implements Feistel.OfLong {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (null == o || getClass() != o.getClass()) return false;
-        FeistelOfLongUnbalanced that = (FeistelOfLongUnbalanced) o;
+        Feistel64Unbalanced that = (Feistel64Unbalanced) o;
         return rounds == that.rounds &&
                 totalBits == that.totalBits &&
                 sourceBits == that.sourceBits &&
