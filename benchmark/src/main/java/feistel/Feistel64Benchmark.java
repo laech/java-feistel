@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class FeistelBenchmark {
+public class Feistel64Benchmark {
 
     @Param("100001")
     private long input;
@@ -58,7 +58,7 @@ public class FeistelBenchmark {
 
     public static void main(String[] args) throws Exception {
         Options options = new OptionsBuilder()
-                .include(FeistelBenchmark.class.getName())
+                .include(Feistel64Benchmark.class.getName())
                 .build();
         new Runner(options).run();
     }
