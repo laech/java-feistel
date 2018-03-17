@@ -75,30 +75,6 @@ final class Feistel64Unbalanced implements Feistel64 {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
-        Feistel64Unbalanced that = (Feistel64Unbalanced) o;
-        return rounds == that.rounds &&
-                totalBits == that.totalBits &&
-                sourceBits == that.sourceBits &&
-                targetBits == that.targetBits &&
-                reverse == that.reverse &&
-                f.equals(that.f);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = rounds;
-        result = 31 * result + totalBits;
-        result = 31 * result + sourceBits;
-        result = 31 * result + targetBits;
-        result = 31 * result + (reverse ? 1 : 0);
-        result = 31 * result + f.hashCode();
-        return result;
-    }
-
-    @Override
     public String toString() {
         return getClass().getSimpleName() +
                 "{rounds=" + rounds +
@@ -106,7 +82,7 @@ final class Feistel64Unbalanced implements Feistel64 {
                 ", sourceBits=" + sourceBits +
                 ", targetBits=" + targetBits +
                 ", reverse=" + reverse +
-                ", function=" + f +
+                ", f=" + f +
                 '}';
     }
 }
