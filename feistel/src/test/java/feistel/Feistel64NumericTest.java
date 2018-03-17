@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 final class Feistel64NumericTest {
 
     private static Stream<Feistel64NumericBase> smallDomain() {
-        RoundFunction64 f = (round, value) -> value;//(value * 31) << round;
+        RoundFunction64 f = (round, value) -> (value * 31) << round;
         return Stream.of(
                 new Params(0, 0, 0, f),
                 new Params(0, 0, 0, f),
@@ -32,6 +32,7 @@ final class Feistel64NumericTest {
                 new Params(7, 0, 200, f),
                 new Params(7, 320, 0, f),
                 new Params(7, 320, 0, f),
+                new Params(4, 320, 200, f),
                 new Params(7, 320, 200, f),
                 new Params(7, 320, 200, f),
                 new Params(11, 320, 200, f),
