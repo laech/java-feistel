@@ -32,7 +32,7 @@ public class Feistel64Benchmark {
         unbalanced = new Feistel64Unbalanced(rounds, 64, 32, 32, false, f);
         unbalancedReversed = unbalanced.reversed();
 
-        balanced = new Feistel64Balanced(rounds, false, f);
+        balanced = new Feistel64Balanced(rounds, 64, false, f);
         balancedReversed = balanced.reversed();
     }
 
