@@ -1,5 +1,6 @@
 package feistel;
 
+import static java.lang.Long.toHexString;
 import static java.util.Objects.requireNonNull;
 
 final class Feistel64Unbalanced implements Feistel64 {
@@ -41,7 +42,9 @@ final class Feistel64Unbalanced implements Feistel64 {
         long targetMask = totalMask >>> nullBits >>> sourceBits;
 
         if ((input & ~totalMask) != 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("input " + input +
+                    " (" + toHexString(input) + ") is" +
+                    " outside of mask range " + toHexString(totalMask));
         }
 
         for (int i = 0; i < rounds; i++) {
