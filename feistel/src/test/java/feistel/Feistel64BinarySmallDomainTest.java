@@ -3,6 +3,7 @@ package feistel;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.function.LongUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -13,13 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 final class Feistel64BinarySmallDomainTest {
 
     private static Stream<Feistel64> smallDomain() {
-        RoundFunction64 f = (round, value) -> (value * 31) << round;
-        return IntStream.range(0, 20)
-                .boxed()
-                .flatMap(i -> Stream.of(
-                        new Feistel64Balanced(i, 16, false, f),
-                        new Feistel64Unbalanced(i, 16, 8, 8, false, f)
-                ));
+        RoundFunction64 f = (round, value) -> (value * 71) + round;
+        return IntStream.range(0, 20).boxed().flatMap(i -> Stream.of(
+                new Feistel64Balanced(i, 16, false, f),
+                new Feistel64Unbalanced(i, 16, 8, 8, false, f)
+        ));
     }
 
     @ParameterizedTest
@@ -40,12 +39,9 @@ final class Feistel64BinarySmallDomainTest {
     @ParameterizedTest
     @MethodSource("smallDomain")
     void isReversible(Feistel64 feistel) {
-        Feistel64 reversed = feistel.reversed();
+        LongUnaryOperator id = feistel.reversed().compose(feistel);
         for (int i = 0, count = 1 << 16; i < count; i++) {
-            long j = feistel.applyAsLong(i);
-            assertTrue(j >= 0, () -> String.valueOf(j));
-            assertTrue(j < count, () -> String.valueOf(j));
-            assertEquals(i, reversed.applyAsLong(j));
+            assertEquals(i, id.applyAsLong(i));
         }
     }
 }

@@ -3,6 +3,7 @@ package feistel;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.function.LongUnaryOperator;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -77,12 +78,9 @@ final class Feistel64NumericSmallDomainTest {
     @ParameterizedTest
     @MethodSource("smallDomain")
     void isReversible(Feistel64NumericBase feistel) {
-        Feistel64 reversed = feistel.reversed();
+        LongUnaryOperator id = feistel.reversed().compose(feistel);
         for (long i = 0; i <= feistel.max; i++) {
-            long j = feistel.applyAsLong(i);
-            assertTrue(j >= 0, () -> Long.toString(j));
-            assertTrue(j <= feistel.max, () -> Long.toString(j));
-            assertEquals(i, reversed.applyAsLong(j));
+            assertEquals(i, id.applyAsLong(i));
         }
     }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
+import java.util.function.Function;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -85,12 +86,9 @@ final class FeistelBigIntegerNumericSmallDomainTest {
     @ParameterizedTest
     @MethodSource("smallDomain")
     void isReversible(FeistelBigIntegerNumericBase feistel) {
-        Feistel<BigInteger> reversed = feistel.reversed();
+        Function<BigInteger, BigInteger> id = feistel.andThen(feistel.reversed());
         for (BigInteger i = ZERO; i.compareTo(feistel.max) <= 0; i = i.add(ONE)) {
-            BigInteger j = feistel.apply(i);
-            assertTrue(j.compareTo(ZERO) >= 0, () -> String.valueOf(j));
-            assertTrue(j.compareTo(feistel.max) <= 0, () -> String.valueOf(j));
-            assertEquals(i, reversed.apply(j));
+            assertEquals(i, id.apply(i));
         }
     }
 }
