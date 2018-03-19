@@ -20,9 +20,10 @@ final class Feistel64Balanced implements Feistel64 {
             throw new IllegalArgumentException(
                     "rounds cannot be negative: " + rounds);
         }
-        if (totalBits < 0 || totalBits > 64 || totalBits % 2 != 0) {
+        if (totalBits < 0 || totalBits > Long.SIZE || totalBits % 2 != 0) {
             throw new IllegalArgumentException(
-                    "totalBits must be even and from 0 to 64: " + totalBits);
+                    "totalBits must be even and from 0 to Long.SIZE: "
+                            + totalBits);
         }
         this.rounds = rounds;
         this.totalBits = totalBits;

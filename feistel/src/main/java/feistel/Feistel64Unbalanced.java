@@ -20,6 +20,30 @@ final class Feistel64Unbalanced implements Feistel64 {
             boolean reverse,
             RoundFunction64 f
     ) {
+        if (rounds < 0) {
+            throw new IllegalArgumentException(
+                    "rounds cannot be negative: " + rounds);
+        }
+        if (sourceBits < 0) {
+            throw new IllegalArgumentException(
+                    "sourceBits cannot be negative: " + sourceBits);
+        }
+        if (targetBits < 0) {
+            throw new IllegalArgumentException(
+                    "targetBits cannot be negative: " + targetBits);
+        }
+        if (targetBits + sourceBits > Long.SIZE) {
+            throw new IllegalArgumentException("" +
+                    "sourceBits (" + sourceBits + ") + " +
+                    "targetBits (" + targetBits + ") " +
+                    "cannot be greater than Long.SIZE ");
+        }
+        if (totalBits > Long.SIZE) {
+            throw new IllegalArgumentException(
+                    "totalBits cannot be greater than Long.SIZE: " +
+                            totalBits);
+        }
+
         this.rounds = rounds;
         this.totalBits = totalBits;
         this.sourceBits = sourceBits;
@@ -30,11 +54,6 @@ final class Feistel64Unbalanced implements Feistel64 {
 
     @Override
     public long applyAsLong(long input) {
-        if (sourceBits < 0
-                || targetBits < 0
-                || targetBits + sourceBits > Long.SIZE) {
-            throw new IllegalArgumentException();
-        }
         long totalMask = 0xffff_ffff_ffff_ffffL >>> (Long.SIZE - totalBits);
         int nullBits = totalBits - sourceBits - targetBits;
         long nullMask = totalMask >>> sourceBits >>> targetBits;
@@ -53,7 +72,8 @@ final class Feistel64Unbalanced implements Feistel64 {
             long b = input & targetMask;
 
             if (reverse) {
-                input = ((b ^ f.applyAsLong(rounds - i - 1, a) & targetMask) << nullBits << sourceBits
+                long F = f.applyAsLong(rounds - i - 1, a) & targetMask;
+                input = ((b ^ F) << nullBits << sourceBits
                         | n << sourceBits
                         | a);
             } else {
