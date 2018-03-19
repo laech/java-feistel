@@ -5,8 +5,8 @@ import static java.util.Objects.requireNonNull;
 
 final class Feistel64Unbalanced implements Feistel64 {
 
+    final int totalBits;
     private final int rounds;
-    private final int totalBits;
     private final int sourceBits;
     private final int targetBits;
     private final boolean reverse;
