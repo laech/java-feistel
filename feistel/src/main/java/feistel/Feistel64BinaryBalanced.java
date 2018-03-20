@@ -2,9 +2,9 @@ package feistel;
 
 import static java.lang.Long.toHexString;
 
-final class Feistel64Balanced extends Feistel64BinaryBase {
+final class Feistel64BinaryBalanced extends Feistel64BinaryBase {
 
-    Feistel64Balanced(
+    Feistel64BinaryBalanced(
             int rounds,
             int totalBits,
             boolean reversed,
@@ -42,8 +42,8 @@ final class Feistel64Balanced extends Feistel64BinaryBase {
     }
 
     @Override
-    public Feistel64Balanced reversed() {
-        return new Feistel64Balanced(rounds, totalBits, !reversed, f);
+    public Feistel64BinaryBalanced reversed() {
+        return new Feistel64BinaryBalanced(rounds, totalBits, !reversed, f);
     }
 
     @Override

@@ -29,10 +29,10 @@ public class Feistel64Benchmark {
     public void setup() {
         RoundFunction64 f = (round, value) -> value;
 
-        unbalanced = new Feistel64Unbalanced(rounds, 64, 32, 32, false, f);
+        unbalanced = new Feistel64BinaryUnbalanced(rounds, 64, 32, 32, false, f);
         unbalancedReversed = unbalanced.reversed();
 
-        balanced = new Feistel64Balanced(rounds, 64, false, f);
+        balanced = new Feistel64BinaryBalanced(rounds, 64, false, f);
         balancedReversed = balanced.reversed();
     }
 
