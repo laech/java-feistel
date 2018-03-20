@@ -1,29 +1,22 @@
 package feistel;
 
 import static java.lang.Long.toHexString;
-import static java.util.Objects.requireNonNull;
 
-final class Feistel64Unbalanced implements Feistel64 {
+final class Feistel64Unbalanced extends Feistel64BinaryBase {
 
-    final int totalBits;
-    private final int rounds;
     private final int sourceBits;
     private final int targetBits;
-    private final boolean reverse;
-    private final RoundFunction64 f;
 
     Feistel64Unbalanced(
             int rounds,
             int totalBits,
             int sourceBits,
             int targetBits,
-            boolean reverse,
+            boolean reversed,
             RoundFunction64 f
     ) {
-        if (rounds < 0) {
-            throw new IllegalArgumentException(
-                    "rounds cannot be negative: " + rounds);
-        }
+        super(rounds, totalBits, reversed, f);
+
         if (sourceBits < 0) {
             throw new IllegalArgumentException(
                     "sourceBits cannot be negative: " + sourceBits);
@@ -38,18 +31,9 @@ final class Feistel64Unbalanced implements Feistel64 {
                     "targetBits (" + targetBits + ") " +
                     "cannot be greater than Long.SIZE ");
         }
-        if (totalBits > Long.SIZE) {
-            throw new IllegalArgumentException(
-                    "totalBits cannot be greater than Long.SIZE: " +
-                            totalBits);
-        }
 
-        this.rounds = rounds;
-        this.totalBits = totalBits;
         this.sourceBits = sourceBits;
         this.targetBits = targetBits;
-        this.reverse = reverse;
-        this.f = requireNonNull(f);
     }
 
     @Override
@@ -71,7 +55,7 @@ final class Feistel64Unbalanced implements Feistel64 {
             long n = input >>> targetBits & nullMask;
             long b = input & targetMask;
 
-            if (reverse) {
+            if (reversed) {
                 long F = f.applyAsLong(rounds - i - 1, a) & targetMask;
                 input = ((b ^ F) << nullBits << sourceBits
                         | n << sourceBits
@@ -92,7 +76,7 @@ final class Feistel64Unbalanced implements Feistel64 {
                 totalBits,
                 targetBits,
                 sourceBits,
-                !reverse,
+                !reversed,
                 f
         );
     }
@@ -104,7 +88,7 @@ final class Feistel64Unbalanced implements Feistel64 {
                 ", totalBits=" + totalBits +
                 ", sourceBits=" + sourceBits +
                 ", targetBits=" + targetBits +
-                ", reverse=" + reverse +
+                ", reversed=" + reversed +
                 ", f=" + f +
                 '}';
     }

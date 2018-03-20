@@ -1,14 +1,8 @@
 package feistel;
 
 import static java.lang.Long.toHexString;
-import static java.util.Objects.requireNonNull;
 
-final class Feistel64Balanced implements Feistel64 {
-
-    private final int rounds;
-    private final int totalBits;
-    private final boolean reversed;
-    private final RoundFunction64 f;
+final class Feistel64Balanced extends Feistel64BinaryBase {
 
     Feistel64Balanced(
             int rounds,
@@ -16,19 +10,11 @@ final class Feistel64Balanced implements Feistel64 {
             boolean reversed,
             RoundFunction64 f
     ) {
-        if (rounds < 0) {
+        super(rounds, totalBits, reversed, f);
+        if (totalBits % 2 != 0) {
             throw new IllegalArgumentException(
-                    "rounds cannot be negative: " + rounds);
+                    "totalBits must be even: " + totalBits);
         }
-        if (totalBits < 0 || totalBits > Long.SIZE || totalBits % 2 != 0) {
-            throw new IllegalArgumentException(
-                    "totalBits must be even and from 0 to Long.SIZE: "
-                            + totalBits);
-        }
-        this.rounds = rounds;
-        this.totalBits = totalBits;
-        this.reversed = reversed;
-        this.f = requireNonNull(f);
     }
 
     @Override
@@ -64,8 +50,9 @@ final class Feistel64Balanced implements Feistel64 {
     public String toString() {
         return getClass().getSimpleName()
                 + "{rounds=" + rounds
+                + ", totalBits=" + totalBits
                 + ", reversed=" + reversed
-                + ", function=" + f
+                + ", f=" + f
                 + "}";
     }
 }
