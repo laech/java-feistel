@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class NumericFeistelBenchmark {
+public class FeistelNumericBenchmark {
 
     @Param("62000")
     private int input;
@@ -71,7 +71,7 @@ public class NumericFeistelBenchmark {
 
     public static void main(String[] args) throws Exception {
         Options options = new OptionsBuilder()
-                .include(NumericFeistelBenchmark.class.getName())
+                .include(FeistelNumericBenchmark.class.getName())
                 .build();
         new Runner(options).run();
     }
