@@ -27,7 +27,7 @@ final class Feistel64BinaryBalanced extends Feistel64BinaryBase {
                     " outside of mask range " + toHexString(totalMask));
         }
 
-        long half = totalBits / 2;
+        int half = totalBits / 2;
         long halfMask = totalMask >>> half;
         long b = input >>> half;
         long a = input & halfMask;

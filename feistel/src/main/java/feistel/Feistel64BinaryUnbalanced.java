@@ -25,11 +25,12 @@ final class Feistel64BinaryUnbalanced extends Feistel64BinaryBase {
             throw new IllegalArgumentException(
                     "targetBits cannot be negative: " + targetBits);
         }
-        if (targetBits + sourceBits > Long.SIZE) {
+        if (targetBits + sourceBits > totalBits) {
             throw new IllegalArgumentException("" +
                     "sourceBits (" + sourceBits + ") + " +
                     "targetBits (" + targetBits + ") " +
-                    "cannot be greater than Long.SIZE ");
+                    "cannot be greater than " +
+                    "totalBits ("+totalBits + ")");
         }
 
         this.sourceBits = sourceBits;
