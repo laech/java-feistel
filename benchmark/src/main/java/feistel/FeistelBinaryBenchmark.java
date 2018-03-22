@@ -23,14 +23,10 @@ public class FeistelBinaryBenchmark {
     @Param("7")
     private int rounds;
 
-    private Feistel64 longBalanced;
-    private Feistel64 longBalancedReversed;
-
-    private Feistel64 longUnbalanced;
-    private Feistel64 longUnbalancedReversed;
-
-    private Feistel<BigInteger> bigIntegerBalanced;
-    private Feistel<BigInteger> bigIntegerUnbalanced;
+    private Feistel64BinaryBalanced longBalanced;
+    private Feistel64BinaryUnbalanced longUnbalanced;
+    private FeistelBigIntegerBinaryBalanced bigIntegerBalanced;
+    private FeistelBigIntegerBinaryUnbalanced bigIntegerUnbalanced;
 
     @Setup
     public void setup() {
@@ -40,11 +36,7 @@ public class FeistelBinaryBenchmark {
         RoundFunction<BigInteger> f = (round, value) -> value;
 
         longUnbalanced = new Feistel64BinaryUnbalanced(rounds, 64, 32, 32, false, f64);
-        longUnbalancedReversed = longUnbalanced.reversed();
-
         longBalanced = new Feistel64BinaryBalanced(rounds, 64, false, f64);
-        longBalancedReversed = longBalanced.reversed();
-
         bigIntegerBalanced = new FeistelBigIntegerBinaryBalanced(rounds, 64, false, f);
         bigIntegerUnbalanced = new FeistelBigIntegerBinaryUnbalanced(rounds, 64, 32, 32, false, f);
     }
@@ -52,16 +44,6 @@ public class FeistelBinaryBenchmark {
     @Benchmark
     public long longBalanced() {
         return longBalanced.applyAsLong(input);
-    }
-
-    @Benchmark
-    public long longBalancedReversed() {
-        return longBalancedReversed.applyAsLong(input);
-    }
-
-    @Benchmark
-    public long longUnbalancedReversed() {
-        return longUnbalancedReversed.applyAsLong(input);
     }
 
     @Benchmark
