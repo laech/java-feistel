@@ -20,6 +20,7 @@
     <modules>
         <module>feistel</module>
         <module>benchmark</module>
+        <module>example</module>
     </modules>
 
 </project>
