@@ -1,7 +1,7 @@
 package feistel;
 
 @FunctionalInterface
-public interface RoundFunction32 {
+public interface IntRoundFunction {
 
     int applyAsInt(int round, int input);
 

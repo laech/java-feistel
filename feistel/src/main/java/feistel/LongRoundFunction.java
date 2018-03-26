@@ -1,7 +1,7 @@
 package feistel;
 
 @FunctionalInterface
-public interface RoundFunction64 {
+public interface LongRoundFunction {
 
     long applyAsLong(int round, long input);
 

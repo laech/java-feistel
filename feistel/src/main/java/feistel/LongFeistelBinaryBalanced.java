@@ -2,13 +2,13 @@ package feistel;
 
 import static java.lang.Long.toHexString;
 
-final class Feistel64BinaryBalanced extends Feistel64BinaryBase {
+final class LongFeistelBinaryBalanced extends LongFeistelBinaryBase {
 
-    Feistel64BinaryBalanced(
+    LongFeistelBinaryBalanced(
             int rounds,
             int totalBits,
             boolean reversed,
-            RoundFunction64 f
+            LongRoundFunction f
     ) {
         super(rounds, totalBits, reversed, f);
         if (totalBits % 2 != 0) {
@@ -42,8 +42,8 @@ final class Feistel64BinaryBalanced extends Feistel64BinaryBase {
     }
 
     @Override
-    public Feistel64BinaryBalanced reversed() {
-        return new Feistel64BinaryBalanced(rounds, totalBits, !reversed, f);
+    public LongFeistelBinaryBalanced reversed() {
+        return new LongFeistelBinaryBalanced(rounds, totalBits, !reversed, f);
     }
 
     @Override

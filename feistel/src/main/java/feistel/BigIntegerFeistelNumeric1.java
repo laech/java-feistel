@@ -2,9 +2,9 @@ package feistel;
 
 import java.math.BigInteger;
 
-final class FeistelBigIntegerNumeric1 extends FeistelBigIntegerNumericBase {
+final class BigIntegerFeistelNumeric1 extends BigIntegerFeistelNumericBase {
 
-    FeistelBigIntegerNumeric1(
+    BigIntegerFeistelNumeric1(
             int rounds,
             BigInteger a,
             BigInteger b,
@@ -37,7 +37,7 @@ final class FeistelBigIntegerNumeric1 extends FeistelBigIntegerNumericBase {
     }
 
     @Override
-    public FeistelBigIntegerNumeric1 reversed() {
-        return new FeistelBigIntegerNumeric1(rounds, a, b, !reversed, f);
+    public BigIntegerFeistelNumeric1 reversed() {
+        return new BigIntegerFeistelNumeric1(rounds, a, b, !reversed, f);
     }
 }

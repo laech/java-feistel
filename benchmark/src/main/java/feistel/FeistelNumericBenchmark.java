@@ -29,10 +29,10 @@ public class FeistelNumericBenchmark {
     @Param("200")
     private int b;
 
-    private Feistel64Numeric1 longFeistel1;
-    private Feistel64Numeric2 longFeistel2;
-    private FeistelBigIntegerNumeric1 bigFeistel1;
-    private FeistelBigIntegerNumeric2 bigFeistel2;
+    private LongFeistelNumeric1 longNumeric1;
+    private LongFeistelNumeric2 longNumeric2;
+    private BigIntegerFeistelNumeric1 bigNumeric1;
+    private BigIntegerFeistelNumeric2 bigNumeric2;
 
     @Setup
     public void setup() {
@@ -41,32 +41,32 @@ public class FeistelNumericBenchmark {
         RoundFunction<BigInteger> f = (round, value) -> value;
         BigInteger a_ = BigInteger.valueOf(a);
         BigInteger b_ = BigInteger.valueOf(b);
-        bigFeistel1 = new FeistelBigIntegerNumeric1(rounds, a_, b_, false, f);
-        bigFeistel2 = new FeistelBigIntegerNumeric2(rounds, a_, b_, false, f);
+        bigNumeric1 = new BigIntegerFeistelNumeric1(rounds, a_, b_, false, f);
+        bigNumeric2 = new BigIntegerFeistelNumeric2(rounds, a_, b_, false, f);
 
-        RoundFunction64 f64 = (round, value) -> value;
-        longFeistel1 = new Feistel64Numeric1(rounds, a, b, false, f64);
-        longFeistel2 = new Feistel64Numeric2(rounds, a, b, false, f64);
+        LongRoundFunction f64 = (round, value) -> value;
+        longNumeric1 = new LongFeistelNumeric1(rounds, a, b, false, f64);
+        longNumeric2 = new LongFeistelNumeric2(rounds, a, b, false, f64);
     }
 
     @Benchmark
     public BigInteger bigIntegerNumeric1() {
-        return bigFeistel1.apply(bigInput);
+        return bigNumeric1.apply(bigInput);
     }
 
     @Benchmark
     public BigInteger bigIntegerNumeric2() {
-        return bigFeistel2.apply(bigInput);
+        return bigNumeric2.apply(bigInput);
     }
 
     @Benchmark
     public long longNumeric1() {
-        return longFeistel1.applyAsLong(input);
+        return longNumeric1.applyAsLong(input);
     }
 
     @Benchmark
     public long longNumeric2() {
-        return longFeistel2.applyAsLong(input);
+        return longNumeric2.applyAsLong(input);
     }
 
     public static void main(String[] args) throws Exception {

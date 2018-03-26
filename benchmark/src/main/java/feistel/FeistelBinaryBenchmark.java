@@ -23,22 +23,22 @@ public class FeistelBinaryBenchmark {
     @Param("7")
     private int rounds;
 
-    private Feistel64BinaryBalanced longBalanced;
-    private Feistel64BinaryUnbalanced longUnbalanced;
-    private FeistelBigIntegerBinaryBalanced bigIntegerBalanced;
-    private FeistelBigIntegerBinaryUnbalanced bigIntegerUnbalanced;
+    private LongFeistelBinaryBalanced longBalanced;
+    private LongFeistelBinaryUnbalanced longUnbalanced;
+    private BigIntegerFeistelBinaryBalanced bigIntegerBalanced;
+    private BigIntegerFeistelBinaryUnbalanced bigIntegerUnbalanced;
 
     @Setup
     public void setup() {
         inputBigInteger = BigInteger.valueOf(input);
 
-        RoundFunction64 f64 = (round, value) -> value;
+        LongRoundFunction f64 = (round, value) -> value;
         RoundFunction<BigInteger> f = (round, value) -> value;
 
-        longUnbalanced = new Feistel64BinaryUnbalanced(rounds, 64, 32, 32, false, f64);
-        longBalanced = new Feistel64BinaryBalanced(rounds, 64, false, f64);
-        bigIntegerBalanced = new FeistelBigIntegerBinaryBalanced(rounds, 64, false, f);
-        bigIntegerUnbalanced = new FeistelBigIntegerBinaryUnbalanced(rounds, 64, 32, 32, false, f);
+        longUnbalanced = new LongFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f64);
+        longBalanced = new LongFeistelBinaryBalanced(rounds, 64, false, f64);
+        bigIntegerBalanced = new BigIntegerFeistelBinaryBalanced(rounds, 64, false, f);
+        bigIntegerUnbalanced = new BigIntegerFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f);
     }
 
     @Benchmark

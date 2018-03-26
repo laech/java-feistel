@@ -2,14 +2,14 @@ package feistel;
 
 import static java.lang.Math.floorMod;
 
-final class Feistel64Numeric1 extends Feistel64NumericBase {
+final class LongFeistelNumeric1 extends LongFeistelNumericBase {
 
-    Feistel64Numeric1(
+    LongFeistelNumeric1(
             int rounds,
             long a,
             long b,
             boolean reversed,
-            RoundFunction64 f
+            LongRoundFunction f
     ) {
         super(rounds, a, b, reversed, f);
     }
@@ -37,7 +37,7 @@ final class Feistel64Numeric1 extends Feistel64NumericBase {
     }
 
     @Override
-    public Feistel64Numeric1 reversed() {
-        return new Feistel64Numeric1(rounds, a, b, !reversed, f);
+    public LongFeistelNumeric1 reversed() {
+        return new LongFeistelNumeric1(rounds, a, b, !reversed, f);
     }
 }

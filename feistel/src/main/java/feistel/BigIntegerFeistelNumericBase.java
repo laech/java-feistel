@@ -6,7 +6,7 @@ import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 import static java.util.Objects.requireNonNull;
 
-abstract class FeistelBigIntegerNumericBase implements Feistel<BigInteger> {
+abstract class BigIntegerFeistelNumericBase implements Feistel<BigInteger> {
 
     final int rounds;
     final BigInteger a;
@@ -15,7 +15,7 @@ abstract class FeistelBigIntegerNumericBase implements Feistel<BigInteger> {
     final boolean reversed;
     final RoundFunction<BigInteger> f;
 
-    FeistelBigIntegerNumericBase(
+    BigIntegerFeistelNumericBase(
             int rounds,
             BigInteger a,
             BigInteger b,

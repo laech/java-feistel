@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 
-final class FeistelBigIntegerBinaryUnbalanced extends FeistelBigIntegerBinaryBase {
+final class BigIntegerFeistelBinaryUnbalanced extends BigIntegerFeistelBinaryBase {
 
     private final int sourceBits;
     private final int targetBits;
@@ -14,7 +14,7 @@ final class FeistelBigIntegerBinaryUnbalanced extends FeistelBigIntegerBinaryBas
     private final BigInteger sourceMask;
     private final BigInteger targetMask;
 
-    FeistelBigIntegerBinaryUnbalanced(
+    BigIntegerFeistelBinaryUnbalanced(
             int rounds,
             int totalBits,
             int sourceBits,
@@ -78,8 +78,8 @@ final class FeistelBigIntegerBinaryUnbalanced extends FeistelBigIntegerBinaryBas
     }
 
     @Override
-    public FeistelBigIntegerBinaryUnbalanced reversed() {
-        return new FeistelBigIntegerBinaryUnbalanced(
+    public BigIntegerFeistelBinaryUnbalanced reversed() {
+        return new BigIntegerFeistelBinaryUnbalanced(
                 rounds,
                 totalBits,
                 targetBits,

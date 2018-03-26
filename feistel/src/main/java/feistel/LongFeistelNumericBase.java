@@ -3,21 +3,21 @@ package feistel;
 import static java.lang.Math.multiplyExact;
 import static java.util.Objects.requireNonNull;
 
-abstract class Feistel64NumericBase implements Feistel64 {
+abstract class LongFeistelNumericBase implements LongFeistel {
 
     final int rounds;
     final long a;
     final long b;
     final long max;
     final boolean reversed;
-    final RoundFunction64 f;
+    final LongRoundFunction f;
 
-    Feistel64NumericBase(
+    LongFeistelNumericBase(
             int rounds,
             long a,
             long b,
             boolean reversed,
-            RoundFunction64 f
+            LongRoundFunction f
     ) {
         requireNonNull(f, "f cannot be null");
 

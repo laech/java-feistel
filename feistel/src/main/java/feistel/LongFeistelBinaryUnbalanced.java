@@ -2,18 +2,18 @@ package feistel;
 
 import static java.lang.Long.toHexString;
 
-final class Feistel64BinaryUnbalanced extends Feistel64BinaryBase {
+final class LongFeistelBinaryUnbalanced extends LongFeistelBinaryBase {
 
     private final int sourceBits;
     private final int targetBits;
 
-    Feistel64BinaryUnbalanced(
+    LongFeistelBinaryUnbalanced(
             int rounds,
             int totalBits,
             int sourceBits,
             int targetBits,
             boolean reversed,
-            RoundFunction64 f
+            LongRoundFunction f
     ) {
         super(rounds, totalBits, reversed, f);
 
@@ -71,8 +71,8 @@ final class Feistel64BinaryUnbalanced extends Feistel64BinaryBase {
     }
 
     @Override
-    public Feistel64BinaryUnbalanced reversed() {
-        return new Feistel64BinaryUnbalanced(
+    public LongFeistelBinaryUnbalanced reversed() {
+        return new LongFeistelBinaryUnbalanced(
                 rounds,
                 totalBits,
                 targetBits,

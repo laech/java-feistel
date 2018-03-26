@@ -1,29 +1,25 @@
 package feistel;
 
-import java.math.BigInteger;
-
-import static java.math.BigInteger.ONE;
 import static java.util.Objects.requireNonNull;
 
-abstract class FeistelBigIntegerBinaryBase implements Feistel<BigInteger> {
+abstract class LongFeistelBinaryBase implements LongFeistel {
 
     final int totalBits;
     final int rounds;
     final boolean reversed;
-    final RoundFunction<BigInteger> f;
-    final BigInteger end;
+    final LongRoundFunction f;
 
-    FeistelBigIntegerBinaryBase(
+    LongFeistelBinaryBase(
             int rounds,
             int totalBits,
             boolean reversed,
-            RoundFunction<BigInteger> f
+            LongRoundFunction f
     ) {
         if (rounds < 0) {
             throw new IllegalArgumentException(
                     "rounds cannot be negative: " + rounds);
         }
-        if (totalBits < 0) {
+        if (totalBits < 0 || totalBits > Long.SIZE) {
             throw new IllegalArgumentException(
                     "totalBits must be from 0 to Long.SIZE: " + totalBits);
         }
@@ -31,6 +27,5 @@ abstract class FeistelBigIntegerBinaryBase implements Feistel<BigInteger> {
         this.totalBits = totalBits;
         this.reversed = reversed;
         this.f = requireNonNull(f);
-        this.end = ONE.shiftLeft(totalBits);
     }
 }

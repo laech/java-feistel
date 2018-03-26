@@ -5,12 +5,12 @@ import java.math.BigInteger;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 
-final class FeistelBigIntegerBinaryBalanced extends FeistelBigIntegerBinaryBase {
+final class BigIntegerFeistelBinaryBalanced extends BigIntegerFeistelBinaryBase {
 
     private final BigInteger halfMask;
     private final int halfBits;
 
-    FeistelBigIntegerBinaryBalanced(
+    BigIntegerFeistelBinaryBalanced(
             int rounds,
             int totalBits,
             boolean reversed,
@@ -47,8 +47,8 @@ final class FeistelBigIntegerBinaryBalanced extends FeistelBigIntegerBinaryBase 
     }
 
     @Override
-    public FeistelBigIntegerBinaryBalanced reversed() {
-        return new FeistelBigIntegerBinaryBalanced(
+    public BigIntegerFeistelBinaryBalanced reversed() {
+        return new BigIntegerFeistelBinaryBalanced(
                 rounds, totalBits, !reversed, f);
     }
 
