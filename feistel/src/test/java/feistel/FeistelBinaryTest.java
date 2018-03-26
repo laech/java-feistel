@@ -207,8 +207,8 @@ final class FeistelBinaryTest {
                 .peek(i -> {
                     assertTrue(i.compareTo(ZERO) >= 0,
                             () -> i + " >= " + 0);
-                    assertTrue(i.compareTo(feistel.end) < 0,
-                            () -> i + " < " + feistel.end);
+                    assertTrue(i.compareTo(feistel.max) <= 0,
+                            () -> i + " <= " + feistel.max);
                 })
                 .count());
     }

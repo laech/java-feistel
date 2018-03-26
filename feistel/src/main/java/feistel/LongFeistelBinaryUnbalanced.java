@@ -1,7 +1,5 @@
 package feistel;
 
-import static java.lang.Long.toHexString;
-
 final class LongFeistelBinaryUnbalanced extends LongFeistelBinaryBase {
 
     private final int sourceBits;
@@ -30,7 +28,7 @@ final class LongFeistelBinaryUnbalanced extends LongFeistelBinaryBase {
                     "sourceBits (" + sourceBits + ") + " +
                     "targetBits (" + targetBits + ") " +
                     "cannot be greater than " +
-                    "totalBits ("+totalBits + ")");
+                    "totalBits (" + totalBits + ")");
         }
 
         this.sourceBits = sourceBits;
@@ -38,18 +36,12 @@ final class LongFeistelBinaryUnbalanced extends LongFeistelBinaryBase {
     }
 
     @Override
-    public long applyAsLong(long input) {
-        long totalMask = 0xffff_ffff_ffff_ffffL >>> (Long.SIZE - totalBits);
+    long doApplyAsLong(long totalMask, long input) {
+
         int nullBits = totalBits - sourceBits - targetBits;
         long nullMask = totalMask >>> sourceBits >>> targetBits;
         long sourceMask = totalMask >>> nullBits >>> targetBits;
         long targetMask = totalMask >>> nullBits >>> sourceBits;
-
-        if ((input & ~totalMask) != 0) {
-            throw new IllegalArgumentException("input " + input +
-                    " (" + toHexString(input) + ") is" +
-                    " outside of mask range " + toHexString(totalMask));
-        }
 
         for (int i = 0; i < rounds; i++) {
             long a = input >>> targetBits >>> nullBits;

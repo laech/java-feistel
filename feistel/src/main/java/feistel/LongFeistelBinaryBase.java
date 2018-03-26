@@ -1,5 +1,6 @@
 package feistel;
 
+import static java.lang.Long.toHexString;
 import static java.util.Objects.requireNonNull;
 
 abstract class LongFeistelBinaryBase implements LongFeistel {
@@ -28,4 +29,19 @@ abstract class LongFeistelBinaryBase implements LongFeistel {
         this.reversed = reversed;
         this.f = requireNonNull(f);
     }
+
+    @Override
+    public final long applyAsLong(long input) {
+
+        long totalMask = 0xffff_ffff_ffff_ffffL >>> (Long.SIZE - totalBits);
+        if ((input & ~totalMask) != 0) {
+            throw new IllegalArgumentException("input " + input +
+                    " (" + toHexString(input) + ") is" +
+                    " outside of mask range " + toHexString(totalMask));
+        }
+
+        return doApplyAsLong(totalMask, input);
+    }
+
+    abstract long doApplyAsLong(long totalMask, long input);
 }

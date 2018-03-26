@@ -2,9 +2,6 @@ package feistel;
 
 import java.math.BigInteger;
 
-import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.ZERO;
-
 final class BigIntegerFeistelBinaryUnbalanced extends BigIntegerFeistelBinaryBase {
 
     private final int sourceBits;
@@ -43,7 +40,7 @@ final class BigIntegerFeistelBinaryUnbalanced extends BigIntegerFeistelBinaryBas
         this.sourceBits = sourceBits;
         this.targetBits = targetBits;
 
-        BigInteger totalMask = end.subtract(ONE);
+        BigInteger totalMask = max;
         nullBits = totalBits - sourceBits - targetBits;
         nullMask = totalMask.shiftRight(sourceBits + targetBits);
         sourceMask = totalMask.shiftRight(nullBits + targetBits);
@@ -51,12 +48,7 @@ final class BigIntegerFeistelBinaryUnbalanced extends BigIntegerFeistelBinaryBas
     }
 
     @Override
-    public BigInteger apply(BigInteger input) {
-
-        if (input.compareTo(ZERO) < 0 || input.compareTo(end) > 0) {
-            // TODO check bit count instead?
-            throw new IllegalArgumentException();
-        }
+    BigInteger doApply(BigInteger input) {
 
         for (int i = 0; i < rounds; i++) {
             BigInteger a = input.shiftRight(targetBits + nullBits);

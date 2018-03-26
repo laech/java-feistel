@@ -1,7 +1,5 @@
 package feistel;
 
-import static java.lang.Long.toHexString;
-
 final class LongFeistelBinaryBalanced extends LongFeistelBinaryBase {
 
     LongFeistelBinaryBalanced(
@@ -18,15 +16,7 @@ final class LongFeistelBinaryBalanced extends LongFeistelBinaryBase {
     }
 
     @Override
-    public long applyAsLong(long input) {
-
-        long totalMask = 0xffff_ffff_ffff_ffffL >>> (Long.SIZE - totalBits);
-        if ((input & ~totalMask) != 0) {
-            throw new IllegalArgumentException("input " + input +
-                    " (" + toHexString(input) + ") is" +
-                    " outside of mask range " + toHexString(totalMask));
-        }
-
+    long doApplyAsLong(long totalMask, long input) {
         int half = totalBits / 2;
         long halfMask = totalMask >>> half;
         long b = input >>> half;

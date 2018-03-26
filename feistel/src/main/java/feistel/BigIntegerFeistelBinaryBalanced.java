@@ -2,9 +2,6 @@ package feistel;
 
 import java.math.BigInteger;
 
-import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.ZERO;
-
 final class BigIntegerFeistelBinaryBalanced extends BigIntegerFeistelBinaryBase {
 
     private final BigInteger halfMask;
@@ -23,16 +20,11 @@ final class BigIntegerFeistelBinaryBalanced extends BigIntegerFeistelBinaryBase 
         }
 
         halfBits = totalBits / 2;
-        halfMask = end.subtract(ONE).shiftRight(halfBits);
+        halfMask = max.shiftRight(halfBits);
     }
 
     @Override
-    public BigInteger apply(BigInteger input) {
-
-        if (input.compareTo(ZERO) < 0 || input.compareTo(end) >= 0) {
-            // TODO check bit count instead?
-            throw new IllegalArgumentException();
-        }
+    BigInteger doApply(BigInteger input) {
 
         BigInteger b = input.shiftRight(halfBits);
         BigInteger a = input.and(halfMask);

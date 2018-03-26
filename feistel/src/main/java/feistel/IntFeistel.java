@@ -3,6 +3,7 @@ package feistel;
 import java.util.function.IntUnaryOperator;
 
 import static java.lang.Integer.toUnsignedLong;
+import static java.lang.Math.multiplyExact;
 import static java.lang.Math.toIntExact;
 
 public interface IntFeistel extends IntUnaryOperator {
@@ -20,25 +21,27 @@ public interface IntFeistel extends IntUnaryOperator {
     }
 
     static IntFeistel numeric1(int rounds, int a, int b, IntRoundFunction f) {
-        if (a < 0) {
-            throw new IllegalArgumentException("a cannot be negative: " + a);
-        }
-        if (b < 0) {
-            throw new IllegalArgumentException("b cannot be negative: " + b);
-        }
+        checkNumeric(a, b);
         return new IntFeistelImpl(LongFeistel.numeric1(
                 rounds, a, b, toRoundFunction64(f)));
     }
 
     static IntFeistel numeric2(int rounds, int a, int b, IntRoundFunction f) {
-        if (a < 0) {
-            throw new IllegalArgumentException("a cannot be negative: " + a);
-        }
-        if (b < 0) {
-            throw new IllegalArgumentException("b cannot be negative: " + b);
-        }
+        checkNumeric(a, b);
         return new IntFeistelImpl(LongFeistel.numeric2(
                 rounds, a, b, toRoundFunction64(f)));
+    }
+
+    static void checkNumeric(int a, int b) {
+        if (a < 0) {
+            throw new IllegalArgumentException(
+                    "a cannot be negative: " + a);
+        }
+        if (b < 0) {
+            throw new IllegalArgumentException(
+                    "b cannot be negative: " + b);
+        }
+        multiplyExact(a, b);
     }
 
     static LongRoundFunction toRoundFunction64(IntRoundFunction f) {

@@ -27,11 +27,11 @@ final class FizzleFade extends SwingWorker<Void, Point> {
     @Override
     protected Void doInBackground() {
         List<Point> points = new ArrayList<>(50);
-        IntFeistel f = IntFeistel.numeric2(7, width, height, (round, input) ->
-                input * 11 + (input >> 5) + 7 * 127 ^ input);
+        IntFeistel feistel = IntFeistel.numeric2(7, width, height,
+                (round, input) -> input * 11 + (input >> 5) + 7 * 127 ^ input);
 
         for (int i = 0, end = width * height; i < end; i++) {
-            int j = f.applyAsInt(i);
+            int j = feistel.applyAsInt(i);
             points.add(new Point(j % width, j / width));
             if (points.size() >= 100) {
                 publish(points.toArray(new Point[0]));
@@ -39,7 +39,8 @@ final class FizzleFade extends SwingWorker<Void, Point> {
                 try {
                     sleep(10);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                    return null;
                 }
             }
         }

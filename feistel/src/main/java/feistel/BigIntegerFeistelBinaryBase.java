@@ -3,6 +3,7 @@ package feistel;
 import java.math.BigInteger;
 
 import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
 import static java.util.Objects.requireNonNull;
 
 abstract class BigIntegerFeistelBinaryBase implements Feistel<BigInteger> {
@@ -11,7 +12,7 @@ abstract class BigIntegerFeistelBinaryBase implements Feistel<BigInteger> {
     final int rounds;
     final boolean reversed;
     final RoundFunction<BigInteger> f;
-    final BigInteger end;
+    final BigInteger max;
 
     BigIntegerFeistelBinaryBase(
             int rounds,
@@ -31,6 +32,19 @@ abstract class BigIntegerFeistelBinaryBase implements Feistel<BigInteger> {
         this.totalBits = totalBits;
         this.reversed = reversed;
         this.f = requireNonNull(f);
-        this.end = ONE.shiftLeft(totalBits);
+        this.max = ONE.shiftLeft(totalBits).subtract(ONE);
     }
+
+    @Override
+    public final BigInteger apply(BigInteger input) {
+
+        if (input.compareTo(ZERO) < 0 || input.compareTo(max) > 0) {
+            throw new IllegalArgumentException(
+                    "input out of range (min=0, max=" + max + "): " + input);
+        }
+
+        return doApply(input);
+    }
+
+    abstract BigInteger doApply(BigInteger input);
 }
