@@ -31,8 +31,8 @@ public class FeistelNumericBenchmark {
 
     private LongFeistelNumeric1 longNumeric1;
     private LongFeistelNumeric2 longNumeric2;
-    private BigIntegerFeistelNumeric1 bigNumeric1;
-    private BigIntegerFeistelNumeric2 bigNumeric2;
+    private Feistel<BigInteger> bigNumeric1;
+    private Feistel<BigInteger> bigNumeric2;
 
     @Setup
     public void setup() {
@@ -41,8 +41,8 @@ public class FeistelNumericBenchmark {
         RoundFunction<BigInteger> f = (round, value) -> value;
         BigInteger a_ = BigInteger.valueOf(a);
         BigInteger b_ = BigInteger.valueOf(b);
-        bigNumeric1 = new BigIntegerFeistelNumeric1(rounds, a_, b_, false, f);
-        bigNumeric2 = new BigIntegerFeistelNumeric2(rounds, a_, b_, false, f);
+        bigNumeric1 = FeistelOfBigIntegerNumeric.numeric1(rounds, a_, b_, f);
+        bigNumeric2 = FeistelOfBigIntegerNumeric.numeric2(rounds, a_, b_, f);
 
         RoundFunction.OfLong f64 = (round, value) -> value;
         longNumeric1 = new LongFeistelNumeric1(rounds, a, b, false, f64);

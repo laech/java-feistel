@@ -1,5 +1,6 @@
 package feistel;
 
+import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongUnaryOperator;
 import java.util.function.UnaryOperator;
@@ -10,10 +11,22 @@ import static java.lang.Math.toIntExact;
 
 public interface Feistel<T> extends UnaryOperator<T> {
 
-    @Override
-    T apply(T input);
-
     Feistel<T> reversed();
+
+    static <T> Feistel<T> of(Function<T, T> f, Function<T, T> g) {
+        return new Feistel<T>() {
+
+            @Override
+            public T apply(T value) {
+                return f.apply(value);
+            }
+
+            @Override
+            public Feistel<T> reversed() {
+                return of(g, f);
+            }
+        };
+    }
 
     interface OfInt extends IntUnaryOperator {
 

@@ -95,8 +95,8 @@ final class FeistelNumericTest extends BaseTest {
             BigInteger a = BigInteger.valueOf(this.a);
             BigInteger b = BigInteger.valueOf(this.b);
             return Stream.of(
-                    new BigIntegerFeistelNumeric1(rounds, a, b, false, bigF),
-                    new BigIntegerFeistelNumeric2(rounds, a, b, false, bigF)
+                    FeistelOfBigIntegerNumeric.numeric1(rounds, a, b, bigF),
+                    FeistelOfBigIntegerNumeric.numeric2(rounds, a, b, bigF)
             );
         }
 
