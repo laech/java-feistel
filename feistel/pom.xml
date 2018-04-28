@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
             <artifactId>stack-source-junit5</artifactId>
-            <version>0.2-beta6</version>
+            <version>0.2-beta8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
