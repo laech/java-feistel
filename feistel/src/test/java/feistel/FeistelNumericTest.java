@@ -16,7 +16,7 @@ import static java.math.BigInteger.ZERO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class FeistelNumericTest {
+final class FeistelNumericTest extends BaseTest {
 
     private static Stream<Arguments> feistel64() {
         return params().flatMap(p ->

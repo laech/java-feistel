@@ -18,6 +18,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.gitlab.lae.stack.source</groupId>
+            <artifactId>stack-source-junit5</artifactId>
+            <version>0.2-beta6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>

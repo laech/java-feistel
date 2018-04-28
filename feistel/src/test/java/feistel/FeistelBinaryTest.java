@@ -16,7 +16,7 @@ import static java.math.BigInteger.ZERO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class FeistelBinaryTest {
+final class FeistelBinaryTest extends BaseTest {
 
     private static Stream<Params> params() {
         return Stream.concat(balancedParams(), unbalancedParams());
@@ -244,10 +244,8 @@ final class FeistelBinaryTest {
                 .map(feistel)
                 .distinct()
                 .peek(i -> {
-                    assertTrue(i.compareTo(ZERO) >= 0,
-                            () -> i + " >= " + 0);
-                    assertTrue(i.compareTo(max) <= 0,
-                            () -> i + " <= " + max);
+                    assertTrue(i.compareTo(ZERO) >= 0, () -> i + " >= " + 0);
+                    assertTrue(i.compareTo(max) <= 0, () -> i + " <= " + max);
                 })
                 .count());
     }
