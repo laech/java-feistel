@@ -32,7 +32,7 @@ public class FeistelBinaryBenchmark {
     public void setup() {
         inputBigInteger = BigInteger.valueOf(input);
 
-        LongRoundFunction f64 = (round, value) -> value;
+        RoundFunction.OfLong f64 = (round, value) -> value;
         RoundFunction<BigInteger> f = (round, value) -> value;
 
         longUnbalanced = new LongFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f64);

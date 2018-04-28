@@ -44,7 +44,7 @@ public class FeistelNumericBenchmark {
         bigNumeric1 = new BigIntegerFeistelNumeric1(rounds, a_, b_, false, f);
         bigNumeric2 = new BigIntegerFeistelNumeric2(rounds, a_, b_, false, f);
 
-        LongRoundFunction f64 = (round, value) -> value;
+        RoundFunction.OfLong f64 = (round, value) -> value;
         longNumeric1 = new LongFeistelNumeric1(rounds, a, b, false, f64);
         longNumeric2 = new LongFeistelNumeric2(rounds, a, b, false, f64);
     }

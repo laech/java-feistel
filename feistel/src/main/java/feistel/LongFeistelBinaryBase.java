@@ -3,18 +3,18 @@ package feistel;
 import static java.lang.Long.toHexString;
 import static java.util.Objects.requireNonNull;
 
-abstract class LongFeistelBinaryBase implements LongFeistel {
+abstract class LongFeistelBinaryBase implements Feistel.OfLong {
 
     final int totalBits;
     final int rounds;
     final boolean reversed;
-    final LongRoundFunction f;
+    final RoundFunction.OfLong f;
 
     LongFeistelBinaryBase(
             int rounds,
             int totalBits,
             boolean reversed,
-            LongRoundFunction f
+            RoundFunction.OfLong f
     ) {
         if (rounds < 0) {
             throw new IllegalArgumentException(

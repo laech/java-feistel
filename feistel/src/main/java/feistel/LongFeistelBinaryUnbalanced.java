@@ -11,7 +11,7 @@ final class LongFeistelBinaryUnbalanced extends LongFeistelBinaryBase {
             int sourceBits,
             int targetBits,
             boolean reversed,
-            LongRoundFunction f
+            RoundFunction.OfLong f
     ) {
         super(rounds, totalBits, reversed, f);
 

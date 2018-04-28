@@ -6,7 +6,7 @@ final class LongFeistelBinaryBalanced extends LongFeistelBinaryBase {
             int rounds,
             int totalBits,
             boolean reversed,
-            LongRoundFunction f
+            RoundFunction.OfLong f
     ) {
         super(rounds, totalBits, reversed, f);
         if (totalBits % 2 != 0) {

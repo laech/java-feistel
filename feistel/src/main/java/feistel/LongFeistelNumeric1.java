@@ -9,7 +9,7 @@ final class LongFeistelNumeric1 extends LongFeistelNumericBase {
             long a,
             long b,
             boolean reversed,
-            LongRoundFunction f
+            RoundFunction.OfLong f
     ) {
         super(rounds, a, b, reversed, f);
     }

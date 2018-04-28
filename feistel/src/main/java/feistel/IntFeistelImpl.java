@@ -4,11 +4,11 @@ import static java.lang.Integer.toUnsignedLong;
 import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
 
-final class IntFeistelImpl implements IntFeistel {
+final class IntFeistelImpl implements Feistel.OfInt {
 
-    private final LongFeistel delegate;
+    private final Feistel.OfLong delegate;
 
-    IntFeistelImpl(LongFeistel delegate) {
+    IntFeistelImpl(Feistel.OfLong delegate) {
         this.delegate = requireNonNull(delegate);
     }
 
@@ -18,7 +18,7 @@ final class IntFeistelImpl implements IntFeistel {
     }
 
     @Override
-    public IntFeistel reversed() {
+    public Feistel.OfInt reversed() {
         return new IntFeistelImpl(delegate.reversed());
     }
 }

@@ -1,6 +1,7 @@
 package feistel;
 
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
@@ -9,6 +10,7 @@ import java.util.function.LongUnaryOperator;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import static java.lang.Math.multiplyExact;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,16 +18,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class FeistelNumericTest {
 
-    private static Stream<LongFeistel> feistel64() {
-        return params().flatMap(Params::toFeistel64);
+    private static Stream<Arguments> feistel64() {
+        return params().flatMap(p ->
+                p.toFeistelOfLong().map(f -> Arguments.of(p, f)));
     }
 
-    private static Stream<Feistel<BigInteger>> feistelBigInteger() {
-        return params().flatMap(Params::toFeistelBigInteger);
+    private static Stream<Arguments> feistelBigInteger() {
+        return params().flatMap(p ->
+                p.toFeistelOfBigInteger().map(f -> Arguments.of(p, f)));
     }
 
     private static Stream<Params> params() {
-        LongRoundFunction longF = (round, value) -> (value * 31) << round;
+        RoundFunction.OfLong longF = (round, value) -> (value * 31) << round;
         RoundFunction<BigInteger> bigF = (round, value) ->
                 value.multiply(BigInteger.valueOf(31)).shiftLeft(round);
 
@@ -63,14 +67,14 @@ final class FeistelNumericTest {
         final int rounds;
         final long a;
         final long b;
-        final LongRoundFunction longF;
+        final RoundFunction.OfLong longF;
         final RoundFunction<BigInteger> bigF;
 
         Params(
                 int rounds,
                 long a,
                 long b,
-                LongRoundFunction longF,
+                RoundFunction.OfLong longF,
                 RoundFunction<BigInteger> bigF
         ) {
             this.rounds = rounds;
@@ -80,14 +84,14 @@ final class FeistelNumericTest {
             this.bigF = bigF;
         }
 
-        Stream<LongFeistel> toFeistel64() {
+        Stream<Feistel.OfLong> toFeistelOfLong() {
             return Stream.of(
                     new LongFeistelNumeric1(rounds, a, b, false, longF),
                     new LongFeistelNumeric2(rounds, a, b, false, longF)
             );
         }
 
-        Stream<Feistel<BigInteger>> toFeistelBigInteger() {
+        Stream<Feistel<BigInteger>> toFeistelOfBigInteger() {
             BigInteger a = BigInteger.valueOf(this.a);
             BigInteger b = BigInteger.valueOf(this.b);
             return Stream.of(
@@ -95,12 +99,22 @@ final class FeistelNumericTest {
                     new BigIntegerFeistelNumeric2(rounds, a, b, false, bigF)
             );
         }
+
+        BigInteger countBigInteger() {
+            BigInteger a = BigInteger.valueOf(this.a);
+            BigInteger b = BigInteger.valueOf(this.b);
+            return a.multiply(b);
+        }
+
+        long countLong() {
+            return multiplyExact(a, b);
+        }
     }
 
     @ParameterizedTest
     @MethodSource("feistel64")
-    void isPermutation64(LongFeistelNumericBase feistel) {
-        long count = feistel.max + 1;
+    void isPermutation64(Params params, Feistel.OfLong feistel) {
+        long count = params.countLong();
         assertEquals(count, LongStream
                 .range(0, count)
                 .map(feistel)
@@ -114,9 +128,10 @@ final class FeistelNumericTest {
 
     @ParameterizedTest
     @MethodSource("feistel64")
-    void isReversible64(LongFeistelNumericBase feistel) {
+    void isReversible64(Params params, Feistel.OfLong feistel) {
         LongUnaryOperator id = feistel.reversed().compose(feistel);
-        for (long i = 0; i <= feistel.max; i++) {
+        long count = params.countLong();
+        for (long i = 0; i < count; i++) {
             assertEquals(i, id.applyAsLong(i));
         }
     }
@@ -124,8 +139,8 @@ final class FeistelNumericTest {
 
     @ParameterizedTest
     @MethodSource("feistelBigInteger")
-    void isPermutationBigInteger(BigIntegerFeistelNumericBase feistel) {
-        BigInteger count = feistel.max.add(ONE);
+    void isPermutationBigInteger(Params params, Feistel<BigInteger> feistel) {
+        BigInteger count = params.countBigInteger();
         assertEquals(count.longValue(), LongStream
                 .range(0, count.longValue())
                 .mapToObj(BigInteger::valueOf)
@@ -140,9 +155,10 @@ final class FeistelNumericTest {
 
     @ParameterizedTest
     @MethodSource("feistelBigInteger")
-    void isReversibleBigInteger(BigIntegerFeistelNumericBase feistel) {
+    void isReversibleBigInteger(Params params, Feistel<BigInteger> feistel) {
         Function<BigInteger, BigInteger> id = feistel.andThen(feistel.reversed());
-        for (BigInteger i = ZERO; i.compareTo(feistel.max) <= 0; i = i.add(ONE)) {
+        BigInteger count = params.countBigInteger();
+        for (BigInteger i = ZERO; i.compareTo(count) < 0; i = i.add(ONE)) {
             assertEquals(i, id.apply(i));
         }
     }
