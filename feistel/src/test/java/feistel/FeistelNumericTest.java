@@ -109,6 +109,15 @@ final class FeistelNumericTest extends BaseTest {
         long countLong() {
             return multiplyExact(a, b);
         }
+
+        @Override
+        public String toString() {
+            return "Params{" +
+                    "rounds=" + rounds +
+                    ", a=" + a +
+                    ", b=" + b +
+                    '}';
+        }
     }
 
     @ParameterizedTest
