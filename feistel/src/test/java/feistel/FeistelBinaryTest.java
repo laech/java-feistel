@@ -83,7 +83,9 @@ final class FeistelBinaryTest extends BaseTest {
 
         abstract Feistel<BigInteger> toFeistelBigInteger();
 
-        abstract BigInteger maxBigInteger();
+        BigInteger maxBigInteger() {
+            return ONE.shiftLeft(totalBits).subtract(ONE);
+        }
     }
 
     private static final class BalancedParams extends Params {
@@ -112,11 +114,6 @@ final class FeistelBinaryTest extends BaseTest {
         Feistel<BigInteger> toFeistelBigInteger() {
             return new BigIntegerFeistelBinaryBalanced(
                     rounds, totalBits, false, bigF);
-        }
-
-        @Override
-        BigInteger maxBigInteger() {
-            return BigInteger.valueOf(~(0xFFFF_FFFF_FFFF_FFFFL << totalBits));
         }
 
         @Override
@@ -161,11 +158,6 @@ final class FeistelBinaryTest extends BaseTest {
         Feistel<BigInteger> toFeistelBigInteger() {
             return new BigIntegerFeistelBinaryUnbalanced(
                     rounds, totalBits, sourceBits, targetBits, false, f);
-        }
-
-        @Override
-        BigInteger maxBigInteger() {
-            return ONE.shiftLeft(totalBits).subtract(ONE);
         }
 
         @Override
@@ -241,13 +233,16 @@ final class FeistelBinaryTest extends BaseTest {
                 .iterate(ZERO, i -> i.add(increment))
                 .limit(count)
                 .parallel()
+                .peek(i -> assertBounds(i, max))
                 .map(feistel)
                 .distinct()
-                .peek(i -> {
-                    assertTrue(i.compareTo(ZERO) >= 0, () -> i + " >= " + 0);
-                    assertTrue(i.compareTo(max) <= 0, () -> i + " <= " + max);
-                })
+                .peek(i -> assertBounds(i, max))
                 .count());
+    }
+
+    private void assertBounds(BigInteger i, BigInteger max) {
+        assertTrue(i.compareTo(ZERO) >= 0, () -> i + " >= " + 0);
+        assertTrue(i.compareTo(max) <= 0, () -> i + " <= " + max);
     }
 
     @ParameterizedTest
