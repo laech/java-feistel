@@ -9,15 +9,50 @@ import static java.lang.Math.multiplyExact;
 import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A <a href="https://en.wikipedia.org/wiki/Feistel_cipher">Feistel</a>
+ * function is a {@link #reversed() reversible} function.
+ * <p>
+ * Given a Feistel function {@code f} and its reverse {@code g},
+ * the following holds:
+ * <pre>
+ * g(f(x)) == x == f(g(x))
+ * </pre>
+ */
 public interface Feistel<T> extends UnaryOperator<T> {
 
+    /**
+     * Applies this function to the given argument.
+     *
+     * @throws IllegalArgumentException if the value is considered to be
+     *                                  invalid by this function, for example,
+     *                                  you have created a 24-bit function but
+     *                                  passed in a value that is greater than
+     *                                  2<sup>24</sup> - 1.
+     */
+    @Override
+    T apply(T value);
+
+    /**
+     * Returns a function that is the reverse of this function.
+     * <p>
+     * Applying the reverse function on the output of this function
+     * will give back the original input, equivalent to applying the
+     * {@link #identity() identity function} to the original input.
+     * <pre>
+     * Feistel&lt;Integer&gt; f = ...
+     * Feistel&lt;Integer&gt; g = f.reversed();
+     * g.apply(f.apply(x)) == x == f.apply(g.apply(x));
+     * </pre>
+     */
     Feistel<T> reversed();
+    // TODO inverse()?
 
     /**
      * Returns a composed function that first applies the {@code before}
      * function to its input, and then applies this function to the result.
      *
-     * @throws NullPointerException if before is null
+     * @throws NullPointerException if {@code before} is null
      */
     default Feistel<T> compose(Feistel<T> before) {
         requireNonNull(before, "before cannot be null");
@@ -31,7 +66,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
      * Returns a composed function that first applies this function to
      * its input, and then applies the {@code after} function to the result.
      *
-     * @throws NullPointerException if after is null
+     * @throws NullPointerException if {@code after} is null
      */
     default Feistel<T> andThen(Feistel<T> after) {
         requireNonNull(after, "after cannot be null");
@@ -51,7 +86,21 @@ public interface Feistel<T> extends UnaryOperator<T> {
         );
     }
 
+    /**
+     * Creates a Feistel function from a pair functions,
+     * where {@code f} is the {@link Feistel#apply(Object) apply} function,
+     * and {@code g} is the {@link Feistel#reversed() reverse} function.
+     * <p>
+     * {@code f} and {@code g} are inverse of each other meaning:
+     * <pre>
+     * g(f(x)) == x == f(g(x))
+     * </pre>
+     *
+     * @throws NullPointerException if {@code f} or {@code g} is null
+     */
     static <T> Feistel<T> of(UnaryOperator<T> f, UnaryOperator<T> g) {
+        requireNonNull(f, "f cannot be null");
+        requireNonNull(g, "g cannot be null");
         return new Feistel<T>() {
 
             @Override
@@ -66,7 +115,21 @@ public interface Feistel<T> extends UnaryOperator<T> {
         };
     }
 
+    /**
+     * Creates a Feistel function from a pair functions,
+     * where {@code f} is the {@link Feistel#apply(Object) apply} function,
+     * and {@code g} is the {@link Feistel#reversed() reverse} function.
+     * <p>
+     * {@code f} and {@code g} are inverse of each other meaning:
+     * <pre>
+     * g(f(x)) == x == f(g(x))
+     * </pre>
+     *
+     * @throws NullPointerException if {@code f} or {@code g} is null
+     */
     static Feistel.OfLong ofLong(LongUnaryOperator f, LongUnaryOperator g) {
+        requireNonNull(f, "f cannot be null");
+        requireNonNull(g, "g cannot be null");
         return new Feistel.OfLong() {
 
             @Override
@@ -81,7 +144,21 @@ public interface Feistel<T> extends UnaryOperator<T> {
         };
     }
 
+    /**
+     * Creates a Feistel function from a pair functions,
+     * where {@code f} is the {@link Feistel#apply(Object) apply} function,
+     * and {@code g} is the {@link Feistel#reversed() reverse} function.
+     * <p>
+     * {@code f} and {@code g} are inverse of each other meaning:
+     * <pre>
+     * g(f(x)) == x == f(g(x))
+     * </pre>
+     *
+     * @throws NullPointerException if {@code f} or {@code g} is null
+     */
     static Feistel.OfInt ofInt(IntUnaryOperator f, IntUnaryOperator g) {
+        requireNonNull(f, "f cannot be null");
+        requireNonNull(g, "g cannot be null");
         return new Feistel.OfInt() {
 
             @Override
@@ -96,7 +173,22 @@ public interface Feistel<T> extends UnaryOperator<T> {
         };
     }
 
+    /**
+     * A Feistel specialised for {@code int} values.
+     */
     interface OfInt extends Feistel<Integer>, IntUnaryOperator {
+
+        /**
+         * Applies this function to the given argument.
+         *
+         * @throws IllegalArgumentException if the value is considered to be
+         *                                  invalid by this function, for example,
+         *                                  you have created a 24-bit function but
+         *                                  passed in a value that is greater than
+         *                                  2<sup>24</sup> - 1.
+         */
+        @Override
+        int applyAsInt(int value);
 
         @Override
         OfInt reversed();
@@ -110,7 +202,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
          * Returns a composed function that first applies the {@code before}
          * function to its input, and then applies this function to the result.
          *
-         * @throws NullPointerException if before is null
+         * @throws NullPointerException if {@code before} is null
          */
         default OfInt compose(OfInt before) {
             requireNonNull(before, "before cannot be null");
@@ -124,7 +216,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
          * Returns a composed function that first applies this function to
          * its input, and then applies the {@code after} function to the result.
          *
-         * @throws NullPointerException if after is null
+         * @throws NullPointerException if {@code after} is null
          */
         default OfInt andThen(OfInt after) {
             requireNonNull(after, "after cannot be null");
@@ -184,7 +276,22 @@ public interface Feistel<T> extends UnaryOperator<T> {
         }
     }
 
+    /**
+     * A Feistel specialised for {@code long} values.
+     */
     interface OfLong extends Feistel<Long>, LongUnaryOperator {
+
+        /**
+         * Applies this function to the given argument.
+         *
+         * @throws IllegalArgumentException if the value is considered to be
+         *                                  invalid by this function, for example,
+         *                                  you have created a 24-bit function but
+         *                                  passed in a value that is greater than
+         *                                  2<sup>24</sup> - 1.
+         */
+        @Override
+        long applyAsLong(long value);
 
         @Override
         OfLong reversed();
@@ -198,7 +305,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
          * Returns a composed function that first applies the {@code before}
          * function to its input, and then applies this function to the result.
          *
-         * @throws NullPointerException if before is null
+         * @throws NullPointerException if {@code before} is null
          */
         default OfLong compose(OfLong before) {
             requireNonNull(before, "before cannot be null");
@@ -212,7 +319,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
          * Returns a composed function that first applies this function to
          * its input, and then applies the {@code after} function to the result.
          *
-         * @throws NullPointerException if after is null
+         * @throws NullPointerException if {@code after} is null
          */
         default OfLong andThen(OfLong after) {
             requireNonNull(after, "after cannot be null");
