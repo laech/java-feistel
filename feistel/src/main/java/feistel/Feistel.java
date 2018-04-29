@@ -1,6 +1,5 @@
 package feistel;
 
-import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongUnaryOperator;
 import java.util.function.UnaryOperator;
@@ -13,7 +12,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
 
     Feistel<T> reversed();
 
-    static <T> Feistel<T> of(Function<T, T> f, Function<T, T> g) {
+    static <T> Feistel<T> of(UnaryOperator<T> f, UnaryOperator<T> g) {
         return new Feistel<T>() {
 
             @Override
@@ -24,6 +23,21 @@ public interface Feistel<T> extends UnaryOperator<T> {
             @Override
             public Feistel<T> reversed() {
                 return of(g, f);
+            }
+        };
+    }
+
+    static Feistel.OfLong ofLong(LongUnaryOperator f, LongUnaryOperator g) {
+        return new Feistel.OfLong() {
+
+            @Override
+            public long applyAsLong(long value) {
+                return f.applyAsLong(value);
+            }
+
+            @Override
+            public Feistel.OfLong reversed() {
+                return ofLong(g, f);
             }
         };
     }
@@ -85,11 +99,11 @@ public interface Feistel<T> extends UnaryOperator<T> {
         }
 
         static OfLong numeric1(int rounds, long a, long b, RoundFunction.OfLong f) {
-            return new LongFeistelNumeric1(rounds, a, b, false, f);
+            return FeistelOfLongNumeric.numeric1(rounds, a, b, f);
         }
 
         static OfLong numeric2(int rounds, long a, long b, RoundFunction.OfLong f) {
-            return new LongFeistelNumeric2(rounds, a, b, false, f);
+            return FeistelOfLongNumeric.numeric2(rounds, a, b, f);
         }
     }
 }

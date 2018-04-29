@@ -86,8 +86,8 @@ final class FeistelNumericTest extends BaseTest {
 
         Stream<Feistel.OfLong> toFeistelOfLong() {
             return Stream.of(
-                    new LongFeistelNumeric1(rounds, a, b, false, longF),
-                    new LongFeistelNumeric2(rounds, a, b, false, longF)
+                    FeistelOfLongNumeric.numeric1(rounds, a, b, longF),
+                    FeistelOfLongNumeric.numeric2(rounds, a, b, longF)
             );
         }
 
