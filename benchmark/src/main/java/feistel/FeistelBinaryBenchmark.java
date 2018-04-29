@@ -25,8 +25,8 @@ public class FeistelBinaryBenchmark {
 
     private LongFeistelBinaryBalanced longBalanced;
     private LongFeistelBinaryUnbalanced longUnbalanced;
-    private BigIntegerFeistelBinaryBalanced bigIntegerBalanced;
-    private BigIntegerFeistelBinaryUnbalanced bigIntegerUnbalanced;
+    private Feistel<BigInteger> bigIntegerBalanced;
+    private Feistel<BigInteger> bigIntegerUnbalanced;
 
     @Setup
     public void setup() {
@@ -37,8 +37,8 @@ public class FeistelBinaryBenchmark {
 
         longUnbalanced = new LongFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f64);
         longBalanced = new LongFeistelBinaryBalanced(rounds, 64, false, f64);
-        bigIntegerBalanced = new BigIntegerFeistelBinaryBalanced(rounds, 64, false, f);
-        bigIntegerUnbalanced = new BigIntegerFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f);
+        bigIntegerBalanced = FeistelOfBigIntegerBinary.balanced(rounds, 64, f);
+        bigIntegerUnbalanced = FeistelOfBigIntegerBinary.unbalanced(rounds, 64, 32, 32, f);
     }
 
     @Benchmark

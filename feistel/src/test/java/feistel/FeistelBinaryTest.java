@@ -112,8 +112,8 @@ final class FeistelBinaryTest extends BaseTest {
 
         @Override
         Feistel<BigInteger> toFeistelBigInteger() {
-            return new BigIntegerFeistelBinaryBalanced(
-                    rounds, totalBits, false, bigF);
+            return FeistelOfBigIntegerBinary.balanced(
+                    rounds, totalBits, bigF);
         }
 
         @Override
@@ -156,8 +156,8 @@ final class FeistelBinaryTest extends BaseTest {
 
         @Override
         Feistel<BigInteger> toFeistelBigInteger() {
-            return new BigIntegerFeistelBinaryUnbalanced(
-                    rounds, totalBits, sourceBits, targetBits, false, f);
+            return FeistelOfBigIntegerBinary.unbalanced(
+                    rounds, totalBits, sourceBits, targetBits, f);
         }
 
         @Override
@@ -253,8 +253,8 @@ final class FeistelBinaryTest extends BaseTest {
         BigInteger increment = testIncrementOfBigInteger(params, count);
         Function<BigInteger, BigInteger> id = feistel.reversed().compose(feistel);
         Stream.iterate(ZERO, i -> i.add(increment))
-                .parallel()
                 .limit(count)
+                .parallel()
                 .forEach(i -> assertEquals(i, id.apply(i)));
     }
 

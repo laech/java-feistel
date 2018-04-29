@@ -3,8 +3,8 @@ package feistel;
 import java.math.BigInteger;
 import java.util.function.UnaryOperator;
 
+import static feistel.Constraints.requireNonNegative;
 import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.ZERO;
 import static java.util.Objects.requireNonNull;
 
 final class FeistelOfBigIntegerNumeric {
@@ -29,11 +29,11 @@ final class FeistelOfBigIntegerNumeric {
         BigInteger max = a.multiply(b).subtract(ONE);
         return Feistel.of(
                 x -> {
-                    checkRange(x, max);
+                    requireNonNegative(x, max);
                     return f.apply(x);
                 },
                 y -> {
-                    checkRange(y, max);
+                    requireNonNegative(y, max);
                     return g.apply(y);
                 }
         );
@@ -101,27 +101,6 @@ final class FeistelOfBigIntegerNumeric {
             }
             return b.multiply(l).add(r);
         });
-    }
-
-    private static void requireNonNegative(BigInteger value, String name) {
-        if (value.compareTo(ZERO) < 0) {
-            throw new IllegalArgumentException(
-                    name + " cannot be negative: " + value);
-        }
-    }
-
-    private static void requireNonNegative(int value, String name) {
-        if (value < 0) {
-            throw new IllegalArgumentException(
-                    name + " cannot be negative: " + value);
-        }
-    }
-
-    private static void checkRange(BigInteger value, BigInteger max) {
-        if (value.compareTo(ZERO) < 0 || value.compareTo(max) > 0) {
-            throw new IllegalArgumentException(
-                    "value out of range (min=0, max=" + max + "): " + value);
-        }
     }
 
 }
