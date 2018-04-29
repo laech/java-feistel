@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
 import java.util.function.Function;
-import java.util.function.LongUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -199,7 +198,7 @@ final class FeistelBinaryTest extends BaseTest {
         Feistel.OfLong feistel = params.toFeistelOfLong();
         int count = testCountOfLong(params);
         long increment = testIncrementOfLong(params, count);
-        LongUnaryOperator id = feistel.reversed().compose(feistel);
+        Feistel.OfLong id = feistel.reversed().compose(feistel);
         for (int i = 0; i < count; i++) {
             long input = increment * i;
             assertEquals(input, id.applyAsLong(input));
