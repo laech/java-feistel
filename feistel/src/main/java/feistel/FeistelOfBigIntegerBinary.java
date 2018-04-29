@@ -1,35 +1,13 @@
 package feistel;
 
 import java.math.BigInteger;
-import java.util.function.UnaryOperator;
 
-import static feistel.Constraints.calculateMax;
 import static feistel.Constraints.requireNonNegative;
+import static java.math.BigInteger.ONE;
 import static java.util.Objects.requireNonNull;
 
 final class FeistelOfBigIntegerBinary {
     private FeistelOfBigIntegerBinary() {
-    }
-
-    private static Feistel<BigInteger> create(
-            BigInteger max,
-            UnaryOperator<BigInteger> f,
-            UnaryOperator<BigInteger> g
-    ) {
-        requireNonNull(max, "max cannot be null");
-        requireNonNull(f, "f cannot be null");
-        requireNonNull(g, "g cannot be null");
-
-        return Feistel.of(
-                x -> {
-                    requireNonNegative(x, max);
-                    return f.apply(x);
-                },
-                y -> {
-                    requireNonNegative(y, max);
-                    return g.apply(y);
-                }
-        );
     }
 
     @FunctionalInterface
@@ -66,11 +44,13 @@ final class FeistelOfBigIntegerBinary {
             }
             return a.shiftLeft(halfBits).or(b);
         };
-        return create(
-                max,
-                x -> impl.apply(x, false),
-                y -> impl.apply(y, true)
-        );
+        return Feistel.of(x -> {
+            requireNonNegative(x, max);
+            return impl.apply(x, false);
+        }, y -> {
+            requireNonNegative(y, max);
+            return impl.apply(y, true);
+        });
     }
 
     static Feistel<BigInteger> unbalanced(
@@ -100,8 +80,9 @@ final class FeistelOfBigIntegerBinary {
         BigInteger sourceMask = max.shiftRight(nullBits + targetBits);
         BigInteger targetMask = max.shiftRight(nullBits + sourceBits);
 
-        return create(max, x -> {
+        return Feistel.of(x -> {
 
+            requireNonNegative(x, max);
             for (int i = 0; i < rounds; i++) {
                 BigInteger a = x.shiftRight(targetBits + nullBits);
                 BigInteger n = x.shiftRight(targetBits).and(nullMask);
@@ -114,6 +95,7 @@ final class FeistelOfBigIntegerBinary {
 
         }, y -> {
 
+            requireNonNegative(y, max);
             for (int i = rounds - 1; i >= 0; i--) {
                 BigInteger a = y.shiftRight(sourceBits + nullBits);
                 BigInteger n = y.shiftRight(sourceBits).and(nullMask);
@@ -122,10 +104,12 @@ final class FeistelOfBigIntegerBinary {
                         .shiftLeft(nullBits + targetBits)
                         .or(n.shiftLeft(targetBits))
                         .or(a);
-
             }
             return y;
         });
     }
 
+    private static BigInteger calculateMax(int totalBits) {
+        return ONE.shiftLeft(totalBits).subtract(ONE);
+    }
 }

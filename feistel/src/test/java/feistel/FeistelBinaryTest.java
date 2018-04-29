@@ -107,7 +107,7 @@ final class FeistelBinaryTest extends BaseTest {
 
         @Override
         Feistel.OfLong toFeistelOfLong() {
-            return new LongFeistelBinaryBalanced(rounds, totalBits, false, longF);
+            return FeistelOfLongBinary.balanced(rounds, totalBits, longF);
         }
 
         @Override
@@ -150,8 +150,8 @@ final class FeistelBinaryTest extends BaseTest {
 
         @Override
         Feistel.OfLong toFeistelOfLong() {
-            return new LongFeistelBinaryUnbalanced(
-                    rounds, totalBits, sourceBits, targetBits, false, longF);
+            return FeistelOfLongBinary.unbalanced(
+                    rounds, totalBits, sourceBits, targetBits, longF);
         }
 
         @Override

@@ -23,8 +23,8 @@ public class FeistelBinaryBenchmark {
     @Param("7")
     private int rounds;
 
-    private LongFeistelBinaryBalanced longBalanced;
-    private LongFeistelBinaryUnbalanced longUnbalanced;
+    private Feistel.OfLong longBalanced;
+    private Feistel.OfLong longUnbalanced;
     private Feistel<BigInteger> bigIntegerBalanced;
     private Feistel<BigInteger> bigIntegerUnbalanced;
 
@@ -35,8 +35,8 @@ public class FeistelBinaryBenchmark {
         RoundFunction.OfLong f64 = (round, value) -> value;
         RoundFunction<BigInteger> f = (round, value) -> value;
 
-        longUnbalanced = new LongFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f64);
-        longBalanced = new LongFeistelBinaryBalanced(rounds, 64, false, f64);
+        longUnbalanced = FeistelOfLongBinary.unbalanced(rounds, 64, 32, 32, f64);
+        longBalanced = FeistelOfLongBinary.balanced(rounds, 64, f64);
         bigIntegerBalanced = FeistelOfBigIntegerBinary.balanced(rounds, 64, f);
         bigIntegerUnbalanced = FeistelOfBigIntegerBinary.unbalanced(rounds, 64, 32, 32, f);
     }

@@ -44,7 +44,4 @@ final class Constraints {
         }
     }
 
-    static BigInteger calculateMax(int totalBits) {
-        return ONE.shiftLeft(totalBits).subtract(ONE);
-    }
 }

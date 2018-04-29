@@ -47,13 +47,13 @@ public interface Feistel<T> extends UnaryOperator<T> {
         OfInt reversed();
 
         static OfInt binary(int rounds, RoundFunction.OfInt f) {
-            return new IntFeistelImpl(new LongFeistelBinaryUnbalanced(
-                    rounds, 32, 16, 16, false, toRoundFunction64(f)));
+            return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
+                    rounds, 32, 16, 16, toRoundFunction64(f)));
         }
 
         static OfInt binary(int rounds, int sourceBits, int targetBits, RoundFunction.OfInt f) {
-            return new IntFeistelImpl(new LongFeistelBinaryUnbalanced(
-                    rounds, 32, sourceBits, targetBits, false, toRoundFunction64(f)));
+            return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
+                    rounds, 32, sourceBits, targetBits, toRoundFunction64(f)));
         }
 
         static OfInt numeric1(int rounds, int a, int b, RoundFunction.OfInt f) {
@@ -91,11 +91,11 @@ public interface Feistel<T> extends UnaryOperator<T> {
         OfLong reversed();
 
         static OfLong binary(int rounds, RoundFunction.OfLong f) {
-            return new LongFeistelBinaryUnbalanced(rounds, 64, 32, 32, false, f);
+            return FeistelOfLongBinary.unbalanced(rounds, 64, 32, 32, f);
         }
 
         static OfLong binary(int rounds, int sourceBits, int targetBits, RoundFunction.OfLong f) {
-            return new LongFeistelBinaryUnbalanced(rounds, 64, sourceBits, targetBits, false, f);
+            return FeistelOfLongBinary.unbalanced(rounds, 64, sourceBits, targetBits, f);
         }
 
         static OfLong numeric1(int rounds, long a, long b, RoundFunction.OfLong f) {
