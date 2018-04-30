@@ -11,9 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A <a href="https://en.wikipedia.org/wiki/Feistel_cipher">Feistel</a>
- * function is a {@link #reversed() reversible} function.
+ * function is an isomorphism - a function paired with an {@link #inverse() inverse}.
  * <p>
- * Given a Feistel function {@code f} and its reverse {@code g},
+ * Given a function {@code f} and its inverse {@code g},
  * the following holds:
  * <pre>
  * g(f(x)) == x == f(g(x))
@@ -34,19 +34,18 @@ public interface Feistel<T> extends UnaryOperator<T> {
     T apply(T value);
 
     /**
-     * Returns a function that is the reverse of this function.
+     * Returns a function that is the inverse of this function.
      * <p>
-     * Applying the reverse function on the output of this function
+     * Applying the inverse function on the output of this function
      * will give back the original input, equivalent to applying the
      * {@link #identity() identity function} to the original input.
      * <pre>
      * Feistel&lt;Integer&gt; f = ...
-     * Feistel&lt;Integer&gt; g = f.reversed();
+     * Feistel&lt;Integer&gt; g = f.inverse();
      * g.apply(f.apply(x)) == x == f.apply(g.apply(x));
      * </pre>
      */
-    Feistel<T> reversed();
-    // TODO inverse()?
+    Feistel<T> inverse();
 
     /**
      * Returns a composed function that first applies the {@code before}
@@ -87,9 +86,9 @@ public interface Feistel<T> extends UnaryOperator<T> {
     }
 
     /**
-     * Creates a Feistel function from a pair functions,
+     * Creates a Feistel function from a pair of inverse functions,
      * where {@code f} is the {@link Feistel#apply(Object) apply} function,
-     * and {@code g} is the {@link Feistel#reversed() reverse} function.
+     * and {@code g} is the {@link Feistel#inverse() inverse} function.
      * <p>
      * {@code f} and {@code g} are inverse of each other meaning:
      * <pre>
@@ -109,7 +108,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
             }
 
             @Override
-            public Feistel<T> reversed() {
+            public Feistel<T> inverse() {
                 return of(g, f);
             }
         };
@@ -118,7 +117,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
     /**
      * Creates a Feistel function from a pair functions,
      * where {@code f} is the {@link Feistel#apply(Object) apply} function,
-     * and {@code g} is the {@link Feistel#reversed() reverse} function.
+     * and {@code g} is the {@link Feistel#inverse() inverse} function.
      * <p>
      * {@code f} and {@code g} are inverse of each other meaning:
      * <pre>
@@ -138,7 +137,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
             }
 
             @Override
-            public Feistel.OfLong reversed() {
+            public Feistel.OfLong inverse() {
                 return ofLong(g, f);
             }
         };
@@ -147,7 +146,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
     /**
      * Creates a Feistel function from a pair functions,
      * where {@code f} is the {@link Feistel#apply(Object) apply} function,
-     * and {@code g} is the {@link Feistel#reversed() reverse} function.
+     * and {@code g} is the {@link Feistel#inverse() inverse} function.
      * <p>
      * {@code f} and {@code g} are inverse of each other meaning:
      * <pre>
@@ -167,7 +166,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
             }
 
             @Override
-            public Feistel.OfInt reversed() {
+            public Feistel.OfInt inverse() {
                 return ofInt(g, f);
             }
         };
@@ -191,7 +190,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
         int applyAsInt(int value);
 
         @Override
-        OfInt reversed();
+        OfInt inverse();
 
         @Override
         default Integer apply(Integer value) {
@@ -294,7 +293,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
         long applyAsLong(long value);
 
         @Override
-        OfLong reversed();
+        OfLong inverse();
 
         @Override
         default Long apply(Long value) {

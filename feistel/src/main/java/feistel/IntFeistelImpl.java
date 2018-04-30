@@ -18,7 +18,7 @@ final class IntFeistelImpl implements Feistel.OfInt {
     }
 
     @Override
-    public Feistel.OfInt reversed() {
-        return new IntFeistelImpl(delegate.reversed());
+    public Feistel.OfInt inverse() {
+        return new IntFeistelImpl(delegate.inverse());
     }
 }

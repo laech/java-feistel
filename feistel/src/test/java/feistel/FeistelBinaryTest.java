@@ -194,11 +194,11 @@ final class FeistelBinaryTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void isReversible64(Params params) {
+    void isInverse64(Params params) {
         Feistel.OfLong feistel = params.toFeistelOfLong();
         int count = testCountOfLong(params);
         long increment = testIncrementOfLong(params, count);
-        Feistel.OfLong id = feistel.reversed().compose(feistel);
+        Feistel.OfLong id = feistel.inverse().compose(feistel);
         for (int i = 0; i < count; i++) {
             long input = increment * i;
             assertEquals(input, id.applyAsLong(input));
@@ -246,11 +246,11 @@ final class FeistelBinaryTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void isReversibleBigInteger(Params params) {
+    void isInverseBigInteger(Params params) {
         int count = testCountOfBigInteger(params);
         Feistel<BigInteger> feistel = params.toFeistelBigInteger();
         BigInteger increment = testIncrementOfBigInteger(params, count);
-        Function<BigInteger, BigInteger> id = feistel.reversed().compose(feistel);
+        Function<BigInteger, BigInteger> id = feistel.inverse().compose(feistel);
         Stream.iterate(ZERO, i -> i.add(increment))
                 .limit(count)
                 .parallel()

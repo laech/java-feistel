@@ -137,8 +137,8 @@ final class FeistelNumericTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("feistel64")
-    void isReversible64(Params params, Feistel.OfLong feistel) {
-        LongUnaryOperator id = feistel.reversed().compose(feistel);
+    void isInverse64(Params params, Feistel.OfLong feistel) {
+        LongUnaryOperator id = feistel.inverse().compose(feistel);
         long count = params.countLong();
         for (long i = 0; i < count; i++) {
             assertEquals(i, id.applyAsLong(i));
@@ -164,8 +164,8 @@ final class FeistelNumericTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("feistelBigInteger")
-    void isReversibleBigInteger(Params params, Feistel<BigInteger> feistel) {
-        Function<BigInteger, BigInteger> id = feistel.andThen(feistel.reversed());
+    void isInverseBigInteger(Params params, Feistel<BigInteger> feistel) {
+        Function<BigInteger, BigInteger> id = feistel.andThen(feistel.inverse());
         BigInteger count = params.countBigInteger();
         for (BigInteger i = ZERO; i.compareTo(count) < 0; i = i.add(ONE)) {
             assertEquals(i, id.apply(i));

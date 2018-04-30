@@ -12,7 +12,7 @@ final class FeistelOfBigIntegerBinary {
 
     @FunctionalInterface
     private interface BalancedImpl {
-        BigInteger apply(BigInteger value, boolean reversed);
+        BigInteger apply(BigInteger value, boolean inverse);
     }
 
     static Feistel<BigInteger> balanced(
@@ -32,11 +32,11 @@ final class FeistelOfBigIntegerBinary {
         BigInteger max = calculateMax(totalBits);
         BigInteger halfMask = max.shiftRight(halfBits);
 
-        BalancedImpl impl = (value, reversed) -> {
+        BalancedImpl impl = (value, inverse) -> {
             BigInteger b = value.shiftRight(halfBits);
             BigInteger a = value.and(halfMask);
             for (int i = 0; i < rounds; i++) {
-                int round = reversed ? rounds - i - 1 : i;
+                int round = inverse ? rounds - i - 1 : i;
                 BigInteger F = rf.apply(round, b).and(halfMask);
                 BigInteger a_ = a;
                 a = b;

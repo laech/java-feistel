@@ -29,8 +29,8 @@ final class FeistelOfIntTest extends BaseTest {
     }
 
     @Test
-    void reversed() {
-        Feistel.OfInt decrement = increment.reversed();
+    void inverse() {
+        Feistel.OfInt decrement = increment.inverse();
         assertEquals(7, (int) decrement.apply(increment.apply(7)));
         assertEquals(7, (int) decrement.compose(increment).apply(7));
         assertEquals(7, (int) decrement.andThen(increment).apply(7));
@@ -40,7 +40,7 @@ final class FeistelOfIntTest extends BaseTest {
     void identity() {
         Feistel.OfInt id = Feistel.OfInt.identity();
         assertEquals(7, (int) id.apply(7));
-        assertEquals(7, (int) id.reversed().apply(7));
+        assertEquals(7, (int) id.inverse().apply(7));
         assertEquals(7, (int) id.compose(id).apply(7));
         assertEquals(7, (int) id.andThen(id).apply(7));
     }

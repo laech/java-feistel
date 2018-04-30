@@ -9,7 +9,7 @@ final class FeistelOfLongBinary {
 
     @FunctionalInterface
     private interface BalancedImpl {
-        long applyAsLong(long value, boolean reversed);
+        long applyAsLong(long value, boolean inverse);
     }
 
     static Feistel.OfLong balanced(
@@ -28,11 +28,11 @@ final class FeistelOfLongBinary {
         long totalMask = getTotalMask(totalBits);
         long halfMask = totalMask >>> halfBits;
 
-        BalancedImpl impl = (value, reversed) -> {
+        BalancedImpl impl = (value, inverse) -> {
             long b = value >>> halfBits;
             long a = value & halfMask;
             for (int i = 0; i < rounds; i++) {
-                int round = reversed ? rounds - i - 1 : i;
+                int round = inverse ? rounds - i - 1 : i;
                 long F = rf.applyAsLong(round, b) & halfMask;
                 long a_ = a;
                 a = b;
