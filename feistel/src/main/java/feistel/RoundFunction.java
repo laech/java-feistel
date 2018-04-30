@@ -28,13 +28,7 @@ public interface RoundFunction<T> {
     interface OfInt extends RoundFunction<Integer> {
 
         /**
-         * Applies this round function on the current round value.
-         *
-         * @param round the current round, for a Feistel with n rounds,
-         *              the values will be {0,1,...,n-1} in that order,
-         *              the order will be reversed for the
-         *              {@link Feistel#inverse() inverse} Feistel.
-         * @param value the current round value
+         * @see #apply(int, Integer)
          */
         int applyAsInt(int round, int value);
 
@@ -51,13 +45,7 @@ public interface RoundFunction<T> {
     interface OfLong extends RoundFunction<Long> {
 
         /**
-         * Applies this round function on the current round value.
-         *
-         * @param round the current round, for a Feistel with n rounds,
-         *              the values will be {0,1,...,n-1} in that order,
-         *              the order will be reversed for the
-         *              {@link Feistel#inverse() inverse} Feistel.
-         * @param value the current round value
+         * @see #apply(int, Long)
          */
         long applyAsLong(int round, long value);
 
