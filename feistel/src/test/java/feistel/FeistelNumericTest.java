@@ -86,8 +86,8 @@ final class FeistelNumericTest extends BaseTest {
 
         Stream<Feistel.OfLong> toFeistelOfLong() {
             return Stream.of(
-                    FeistelOfLongNumeric.numeric1(rounds, a, b, longF),
-                    FeistelOfLongNumeric.numeric2(rounds, a, b, longF)
+                    FeistelOfLongNumeric.fe1(rounds, a, b, longF),
+                    FeistelOfLongNumeric.fe2(rounds, a, b, longF)
             );
         }
 
@@ -95,8 +95,8 @@ final class FeistelNumericTest extends BaseTest {
             BigInteger a = BigInteger.valueOf(this.a);
             BigInteger b = BigInteger.valueOf(this.b);
             return Stream.of(
-                    FeistelOfBigIntegerNumeric.numeric1(rounds, a, b, bigF),
-                    FeistelOfBigIntegerNumeric.numeric2(rounds, a, b, bigF)
+                    FeistelOfBigIntegerNumeric.fe1(rounds, a, b, bigF),
+                    FeistelOfBigIntegerNumeric.fe2(rounds, a, b, bigF)
             );
         }
 

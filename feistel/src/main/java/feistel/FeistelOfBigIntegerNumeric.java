@@ -39,7 +39,11 @@ final class FeistelOfBigIntegerNumeric {
         );
     }
 
-    static Feistel<BigInteger> numeric1(
+    /**
+     * Algorithm FE1 from Format-Preserving Encryption by
+     * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
+     */
+    static Feistel<BigInteger> fe1(
             int rounds,
             BigInteger a,
             BigInteger b,
@@ -68,7 +72,11 @@ final class FeistelOfBigIntegerNumeric {
         });
     }
 
-    static Feistel<BigInteger> numeric2(
+    /**
+     * Algorithm FE2 from Format-Preserving Encryption by
+     * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
+     */
+    static Feistel<BigInteger> fe2(
             int rounds,
             BigInteger a,
             BigInteger b,

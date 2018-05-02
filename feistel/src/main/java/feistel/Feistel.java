@@ -4,9 +4,6 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.LongUnaryOperator;
 import java.util.function.UnaryOperator;
 
-import static java.lang.Integer.toUnsignedLong;
-import static java.lang.Math.multiplyExact;
-import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -143,6 +140,22 @@ public interface Feistel<T> extends UnaryOperator<T> {
         };
     }
 
+    static OfLong ofLongBinary(int rounds, RoundFunction.OfLong f) {
+        return FeistelOfLongBinary.unbalanced(rounds, 64, 32, 32, f);
+    }
+
+    static OfLong ofLongBinary(int rounds, int sourceBits, int targetBits, RoundFunction.OfLong f) {
+        return FeistelOfLongBinary.unbalanced(rounds, 64, sourceBits, targetBits, f);
+    }
+
+    static OfLong ofLongNumeric1(int rounds, long a, long b, RoundFunction.OfLong f) {
+        return FeistelOfLongNumeric.fe1(rounds, a, b, f);
+    }
+
+    static OfLong ofLongNumeric2(int rounds, long a, long b, RoundFunction.OfLong f) {
+        return FeistelOfLongNumeric.fe2(rounds, a, b, f);
+    }
+
     /**
      * Creates a Feistel function from a pair functions,
      * where {@code f} is the {@link Feistel#apply(Object) apply} function,
@@ -170,6 +183,28 @@ public interface Feistel<T> extends UnaryOperator<T> {
                 return ofInt(g, f);
             }
         };
+    }
+
+    static OfInt ofIntBinary(int rounds, RoundFunction.OfInt f) {
+        return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
+                rounds, 32, 16, 16, IntFeistelImpl.toRoundFunction64(f)));
+    }
+
+    static OfInt ofIntBinary(int rounds, int sourceBits, int targetBits, RoundFunction.OfInt f) {
+        return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
+                rounds, 32, sourceBits, targetBits, IntFeistelImpl.toRoundFunction64(f)));
+    }
+
+    static OfInt ofIntNumeric1(int rounds, int a, int b, RoundFunction.OfInt f) {
+        IntFeistelImpl.checkNumeric(a, b);
+        return new IntFeistelImpl(ofLongNumeric1(
+                rounds, a, b, IntFeistelImpl.toRoundFunction64(f)));
+    }
+
+    static OfInt ofIntNumeric2(int rounds, int a, int b, RoundFunction.OfInt f) {
+        IntFeistelImpl.checkNumeric(a, b);
+        return new IntFeistelImpl(ofLongNumeric2(
+                rounds, a, b, IntFeistelImpl.toRoundFunction64(f)));
     }
 
     /**
@@ -233,45 +268,6 @@ public interface Feistel<T> extends UnaryOperator<T> {
                     IntUnaryOperator.identity(),
                     IntUnaryOperator.identity()
             );
-        }
-
-        static OfInt binary(int rounds, RoundFunction.OfInt f) {
-            return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
-                    rounds, 32, 16, 16, toRoundFunction64(f)));
-        }
-
-        static OfInt binary(int rounds, int sourceBits, int targetBits, RoundFunction.OfInt f) {
-            return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
-                    rounds, 32, sourceBits, targetBits, toRoundFunction64(f)));
-        }
-
-        static OfInt numeric1(int rounds, int a, int b, RoundFunction.OfInt f) {
-            checkNumeric(a, b);
-            return new IntFeistelImpl(Feistel.OfLong.numeric1(
-                    rounds, a, b, toRoundFunction64(f)));
-        }
-
-        static OfInt numeric2(int rounds, int a, int b, RoundFunction.OfInt f) {
-            checkNumeric(a, b);
-            return new IntFeistelImpl(Feistel.OfLong.numeric2(
-                    rounds, a, b, toRoundFunction64(f)));
-        }
-
-        static void checkNumeric(int a, int b) {
-            if (a < 0) {
-                throw new IllegalArgumentException(
-                        "a cannot be negative: " + a);
-            }
-            if (b < 0) {
-                throw new IllegalArgumentException(
-                        "b cannot be negative: " + b);
-            }
-            multiplyExact(a, b);
-        }
-
-        static RoundFunction.OfLong toRoundFunction64(RoundFunction.OfInt f) {
-            return (round, input) -> toUnsignedLong(
-                    f.applyAsInt(round, toIntExact(input)));
         }
     }
 
@@ -338,20 +334,5 @@ public interface Feistel<T> extends UnaryOperator<T> {
             );
         }
 
-        static OfLong binary(int rounds, RoundFunction.OfLong f) {
-            return FeistelOfLongBinary.unbalanced(rounds, 64, 32, 32, f);
-        }
-
-        static OfLong binary(int rounds, int sourceBits, int targetBits, RoundFunction.OfLong f) {
-            return FeistelOfLongBinary.unbalanced(rounds, 64, sourceBits, targetBits, f);
-        }
-
-        static OfLong numeric1(int rounds, long a, long b, RoundFunction.OfLong f) {
-            return FeistelOfLongNumeric.numeric1(rounds, a, b, f);
-        }
-
-        static OfLong numeric2(int rounds, long a, long b, RoundFunction.OfLong f) {
-            return FeistelOfLongNumeric.numeric2(rounds, a, b, f);
-        }
     }
 }

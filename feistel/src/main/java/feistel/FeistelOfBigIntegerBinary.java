@@ -15,6 +15,9 @@ final class FeistelOfBigIntegerBinary {
         BigInteger apply(BigInteger value, boolean inverse);
     }
 
+    /**
+     * Adapted from the traditional balanced Feistel.
+     */
     static Feistel<BigInteger> balanced(
             int rounds,
             int totalBits,
@@ -53,6 +56,10 @@ final class FeistelOfBigIntegerBinary {
         });
     }
 
+    /**
+     * Adapted from Unbalanced Feistel Networks and Block-Cipher Design
+     * by Bruce Schneier and John Kelsey.
+     */
     static Feistel<BigInteger> unbalanced(
             int rounds,
             int totalBits,

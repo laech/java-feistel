@@ -41,12 +41,12 @@ public class FeistelNumericBenchmark {
         RoundFunction<BigInteger> f = (round, value) -> value;
         BigInteger a_ = BigInteger.valueOf(a);
         BigInteger b_ = BigInteger.valueOf(b);
-        bigNumeric1 = FeistelOfBigIntegerNumeric.numeric1(rounds, a_, b_, f);
-        bigNumeric2 = FeistelOfBigIntegerNumeric.numeric2(rounds, a_, b_, f);
+        bigNumeric1 = FeistelOfBigIntegerNumeric.fe1(rounds, a_, b_, f);
+        bigNumeric2 = FeistelOfBigIntegerNumeric.fe2(rounds, a_, b_, f);
 
         RoundFunction.OfLong f64 = (round, value) -> value;
-        longNumeric1 = FeistelOfLongNumeric.numeric1(rounds, a, b, f64);
-        longNumeric2 = FeistelOfLongNumeric.numeric2(rounds, a, b, f64);
+        longNumeric1 = FeistelOfLongNumeric.fe1(rounds, a, b, f64);
+        longNumeric2 = FeistelOfLongNumeric.fe2(rounds, a, b, f64);
     }
 
     @Benchmark

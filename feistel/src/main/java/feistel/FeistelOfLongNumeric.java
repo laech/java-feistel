@@ -36,7 +36,11 @@ final class FeistelOfLongNumeric {
         );
     }
 
-    static Feistel.OfLong numeric1(
+    /**
+     * Algorithm FE1 from Format-Preserving Encryption by
+     * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
+     */
+    static Feistel.OfLong fe1(
             int rounds,
             long a,
             long b,
@@ -65,7 +69,11 @@ final class FeistelOfLongNumeric {
         });
     }
 
-    static Feistel.OfLong numeric2(
+    /**
+     * Algorithm FE2 from Format-Preserving Encryption by
+     * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
+     */
+    static Feistel.OfLong fe2(
             int rounds,
             long a,
             long b,

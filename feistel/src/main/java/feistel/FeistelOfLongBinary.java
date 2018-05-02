@@ -12,6 +12,9 @@ final class FeistelOfLongBinary {
         long applyAsLong(long value, boolean inverse);
     }
 
+    /**
+     * Adapted from the traditional balanced Feistel.
+     */
     static Feistel.OfLong balanced(
             int rounds,
             int totalBits,
@@ -50,6 +53,10 @@ final class FeistelOfLongBinary {
         });
     }
 
+    /**
+     * Adapted from Unbalanced Feistel Networks and Block-Cipher Design
+     * by Bruce Schneier and John Kelsey.
+     */
     static Feistel.OfLong unbalanced(
             int rounds,
             int totalBits,
