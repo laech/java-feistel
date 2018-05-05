@@ -20,7 +20,13 @@
         <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
             <artifactId>stack-source-junit5</artifactId>
-            <version>0.2-beta14</version>
+            <version>0.2-beta17</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.gitlab.lae.stack.source</groupId>
+            <artifactId>stack-source-processor</artifactId>
+            <version>0.2-beta17</version>
             <scope>test</scope>
         </dependency>
         <dependency>
