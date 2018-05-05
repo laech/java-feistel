@@ -1,5 +1,6 @@
 package feistel;
 
+import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongUnaryOperator;
 import java.util.function.UnaryOperator;
@@ -7,16 +8,10 @@ import java.util.function.UnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A <a href="https://en.wikipedia.org/wiki/Feistel_cipher">Feistel</a>
- * function is an isomorphism - a function paired with an {@link #inverse() inverse}.
- * <p>
- * Given a function {@code f} and its inverse {@code g},
- * the following holds:
- * <pre>
- * g(f(x)) == x == f(g(x))
- * </pre>
+ * A generalized <a href="https://en.wikipedia.org/wiki/Feistel_cipher">Feistel</a>
+ * function.
  */
-public interface Feistel<T> extends UnaryOperator<T> {
+public interface Feistel<T> extends UnaryOperator<T>, Isomorphism<T, T> {
 
     /**
      * Applies this function to the given argument.
@@ -30,18 +25,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
     @Override
     T apply(T value);
 
-    /**
-     * Returns a function that is the inverse of this function.
-     * <p>
-     * Applying the inverse function on the output of this function
-     * will give back the original input, equivalent to applying the
-     * {@link #identity() identity function} to the original input.
-     * <pre>
-     * Feistel&lt;Integer&gt; f = ...
-     * Feistel&lt;Integer&gt; g = f.inverse();
-     * g.apply(f.apply(x)) == x == f.apply(g.apply(x));
-     * </pre>
-     */
+    @Override
     Feistel<T> inverse();
 
     /**
@@ -51,11 +35,7 @@ public interface Feistel<T> extends UnaryOperator<T> {
      * @throws NullPointerException if {@code before} is null
      */
     default Feistel<T> compose(Feistel<T> before) {
-        requireNonNull(before, "before cannot be null");
-        return of(
-                x -> apply(before.apply(x)),
-                y -> before.apply(apply(y))
-        );
+        return of(compose((Isomorphism<T, T>) before));
     }
 
     /**
@@ -65,61 +45,39 @@ public interface Feistel<T> extends UnaryOperator<T> {
      * @throws NullPointerException if {@code after} is null
      */
     default Feistel<T> andThen(Feistel<T> after) {
-        requireNonNull(after, "after cannot be null");
-        return of(
-                x -> after.apply(apply(x)),
-                y -> apply(after.apply(y))
-        );
+        return of(andThen((Isomorphism<T, T>) after));
     }
 
     /**
      * Returns a function that always returns its input argument.
      */
     static <T> Feistel<T> identity() {
-        return of(
-                UnaryOperator.identity(),
-                UnaryOperator.identity()
-        );
+        return of(Isomorphism.identity());
+    }
+
+    static <T> Feistel<T> of(Isomorphism<T, T> f) {
+        if (f instanceof Feistel<?>) {
+            return (Feistel<T>) f;
+        } else {
+            return of(f, f.inverse());
+        }
     }
 
     /**
-     * Creates a Feistel function from a pair of inverse functions,
-     * where {@code f} is the {@link Feistel#apply(Object) apply} function,
-     * and {@code g} is the {@link Feistel#inverse() inverse} function.
-     * <p>
-     * {@code f} and {@code g} are inverse of each other meaning:
-     * <pre>
-     * g(f(x)) == x == f(g(x))
-     * </pre>
+     * Creates a Feistel function from a pair of functions,
+     * where {@code f} is the {@link #apply(Object) apply} function,
+     * and {@code g} is the {@link #inverse() inverse} function.
      *
      * @throws NullPointerException if {@code f} or {@code g} is null
      */
-    static <T> Feistel<T> of(UnaryOperator<T> f, UnaryOperator<T> g) {
-        requireNonNull(f, "f cannot be null");
-        requireNonNull(g, "g cannot be null");
-        return new Feistel<T>() {
-
-            @Override
-            public T apply(T value) {
-                return f.apply(value);
-            }
-
-            @Override
-            public Feistel<T> inverse() {
-                return of(g, f);
-            }
-        };
+    static <T> Feistel<T> of(Function<T, T> f, Function<T, T> g) {
+        return of(Isomorphism.of(f, g));
     }
 
     /**
      * Creates a Feistel function from a pair functions,
-     * where {@code f} is the {@link Feistel#apply(Object) apply} function,
-     * and {@code g} is the {@link Feistel#inverse() inverse} function.
-     * <p>
-     * {@code f} and {@code g} are inverse of each other meaning:
-     * <pre>
-     * g(f(x)) == x == f(g(x))
-     * </pre>
+     * where {@code f} is the {@link OfLong#apply(Object) apply} function,
+     * and {@code g} is the {@link OfLong#inverse() inverse} function.
      *
      * @throws NullPointerException if {@code f} or {@code g} is null
      */
@@ -158,13 +116,8 @@ public interface Feistel<T> extends UnaryOperator<T> {
 
     /**
      * Creates a Feistel function from a pair functions,
-     * where {@code f} is the {@link Feistel#apply(Object) apply} function,
-     * and {@code g} is the {@link Feistel#inverse() inverse} function.
-     * <p>
-     * {@code f} and {@code g} are inverse of each other meaning:
-     * <pre>
-     * g(f(x)) == x == f(g(x))
-     * </pre>
+     * where {@code f} is the {@link OfInt#applyAsInt(int) apply} function,
+     * and {@code g} is the {@link OfInt#inverse() inverse} function.
      *
      * @throws NullPointerException if {@code f} or {@code g} is null
      */
