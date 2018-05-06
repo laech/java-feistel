@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
  * A generalized <a href="https://en.wikipedia.org/wiki/Feistel_cipher">Feistel</a>
  * function.
  */
-public interface Feistel<T> extends UnaryOperator<T>, Isomorphism<T, T> {
+public interface Feistel<A> extends UnaryOperator<A>, Isomorphism<A, A> {
 
     /**
      * Applies this function to the given argument.
@@ -23,10 +23,10 @@ public interface Feistel<T> extends UnaryOperator<T>, Isomorphism<T, T> {
      *                                  2<sup>24</sup> - 1.
      */
     @Override
-    T apply(T value);
+    A apply(A value);
 
     @Override
-    Feistel<T> inverse();
+    Feistel<A> inverse();
 
     /**
      * Returns a composed function that first applies the {@code before}
@@ -34,8 +34,8 @@ public interface Feistel<T> extends UnaryOperator<T>, Isomorphism<T, T> {
      *
      * @throws NullPointerException if {@code before} is null
      */
-    default Feistel<T> compose(Feistel<T> before) {
-        return of(compose((Isomorphism<T, T>) before));
+    default Feistel<A> compose(Feistel<A> before) {
+        return of(compose((Isomorphism<A, A>) before));
     }
 
     /**
@@ -44,8 +44,8 @@ public interface Feistel<T> extends UnaryOperator<T>, Isomorphism<T, T> {
      *
      * @throws NullPointerException if {@code after} is null
      */
-    default Feistel<T> andThen(Feistel<T> after) {
-        return of(andThen((Isomorphism<T, T>) after));
+    default Feistel<A> andThen(Feistel<A> after) {
+        return of(andThen((Isomorphism<A, A>) after));
     }
 
     /**

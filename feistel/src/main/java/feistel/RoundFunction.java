@@ -8,7 +8,7 @@ package feistel;
  * given the same input must always produce the same output.
  */
 @FunctionalInterface
-public interface RoundFunction<T> {
+public interface RoundFunction<A> {
 
     /**
      * Applies this round function on the current round value.
@@ -19,7 +19,7 @@ public interface RoundFunction<T> {
      *              {@link Feistel#inverse() inverse} Feistel.
      * @param value the current round value
      */
-    T apply(int round, T value);
+    A apply(int round, A value);
 
     /**
      * A round function specialized for {@code int} values.

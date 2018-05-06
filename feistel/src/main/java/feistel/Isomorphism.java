@@ -10,14 +10,14 @@ import java.util.function.Function;
  * g.apply(f.apply(x)) == x == f.apply(g.apply(x));
  * </pre>
  */
-public interface Isomorphism<T, R> extends Function<T, R> {
+public interface Isomorphism<A, B> extends Function<A, B> {
 
     // TODO where to put this?
 
     /**
      * Returns the inverse function.
      */
-    Isomorphism<R, T> inverse();
+    Isomorphism<B, A> inverse();
 
     /**
      * Creates an isomorphism from a pair of functions,
@@ -26,16 +26,16 @@ public interface Isomorphism<T, R> extends Function<T, R> {
      *
      * @throws NullPointerException if {@code f} or {@code g} is null
      */
-    static <T, R> Isomorphism<T, R> of(Function<T, R> f, Function<R, T> g) {
-        return new Isomorphism<T, R>() {
+    static <A, B> Isomorphism<A, B> of(Function<A, B> f, Function<B, A> g) {
+        return new Isomorphism<A, B>() {
 
             @Override
-            public R apply(T t) {
-                return f.apply(t);
+            public B apply(A a) {
+                return f.apply(a);
             }
 
             @Override
-            public Isomorphism<R, T> inverse() {
+            public Isomorphism<B, A> inverse() {
                 return of(g, f);
             }
         };
@@ -47,10 +47,10 @@ public interface Isomorphism<T, R> extends Function<T, R> {
      *
      * @throws NullPointerException if {@code before} is null
      */
-    default <V> Isomorphism<V, R> compose(Isomorphism<V, T> before) {
+    default <A0> Isomorphism<A0, B> compose(Isomorphism<A0, A> before) {
         return of(
-                compose((Function<V, T>) before),
-                before.inverse().compose((Function<R, T>) inverse())
+                compose((Function<A0, A>) before),
+                before.inverse().compose((Function<B, A>) inverse())
         );
     }
 
@@ -60,17 +60,17 @@ public interface Isomorphism<T, R> extends Function<T, R> {
      *
      * @throws NullPointerException if {@code after} is null
      */
-    default <V> Isomorphism<T, V> andThen(Isomorphism<R, V> after) {
+    default <C> Isomorphism<A, C> andThen(Isomorphism<B, C> after) {
         return of(
-                andThen((Function<R, V>) after),
-                after.inverse().andThen((Function<R, T>) inverse())
+                andThen((Function<B, C>) after),
+                after.inverse().andThen((Function<B, A>) inverse())
         );
     }
 
     /**
      * Returns a function that always returns its input argument.
      */
-    static <T> Isomorphism<T, T> identity() {
+    static <A> Isomorphism<A, A> identity() {
         return of(Function.identity(), Function.identity());
     }
 }
