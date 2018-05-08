@@ -85,42 +85,42 @@ public final class Feistel {
         return FeistelOfBigIntegerNumeric.fe2(rounds, a, b, f);
     }
 
-    public static OfLong ofLongBinary(int rounds, RoundFunction.OfLong f) {
-        return FeistelOfLongBinary.unbalanced(rounds, 64, 32, 32, f);
+    public static OfLong ofLongBinary(
+            int sourceBits,
+            int targetBits,
+            int rounds,
+            RoundFunction.OfLong f
+    ) {
+        return FeistelOfLongBinary.unbalanced(
+                rounds, 64, sourceBits, targetBits, f
+        );
     }
 
-    public static OfLong ofLongBinary(int rounds, int sourceBits, int targetBits, RoundFunction.OfLong f) {
-        return FeistelOfLongBinary.unbalanced(rounds, 64, sourceBits, targetBits, f);
-    }
-
-    public static OfLong ofLongNumeric1(int rounds, long a, long b, RoundFunction.OfLong f) {
-        return FeistelOfLongNumeric.fe1(rounds, a, b, f);
-    }
-
-    public static OfLong ofLongNumeric2(int rounds, long a, long b, RoundFunction.OfLong f) {
+    public static OfLong ofLongNumeric(
+            long a, long b, int rounds, RoundFunction.OfLong f
+    ) {
         return FeistelOfLongNumeric.fe2(rounds, a, b, f);
     }
 
-    public static OfInt ofIntBinary(int rounds, RoundFunction.OfInt f) {
+    public static OfInt ofIntBinary(
+            int totalBits,
+            int sourceBits,
+            int targetBits,
+            int rounds,
+            RoundFunction.OfInt f
+    ) {
+        // TODO check args
         return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
-                rounds, 32, 16, 16, IntFeistelImpl.toRoundFunction64(f)));
+                rounds, totalBits, sourceBits, targetBits,
+                IntFeistelImpl.toRoundFunction64(f)));
     }
 
-    public static OfInt ofIntBinary(int rounds, int sourceBits, int targetBits, RoundFunction.OfInt f) {
-        return new IntFeistelImpl(FeistelOfLongBinary.unbalanced(
-                rounds, 32, sourceBits, targetBits, IntFeistelImpl.toRoundFunction64(f)));
-    }
-
-    public static OfInt ofIntNumeric1(int rounds, int a, int b, RoundFunction.OfInt f) {
+    public static OfInt ofIntNumeric(
+            int a, int b, int rounds, RoundFunction.OfInt f
+    ) {
         IntFeistelImpl.checkNumeric(a, b);
-        return new IntFeistelImpl(ofLongNumeric1(
-                rounds, a, b, IntFeistelImpl.toRoundFunction64(f)));
-    }
-
-    public static OfInt ofIntNumeric2(int rounds, int a, int b, RoundFunction.OfInt f) {
-        IntFeistelImpl.checkNumeric(a, b);
-        return new IntFeistelImpl(ofLongNumeric2(
-                rounds, a, b, IntFeistelImpl.toRoundFunction64(f)));
+        return new IntFeistelImpl(ofLongNumeric(
+                a, b, rounds, IntFeistelImpl.toRoundFunction64(f)));
     }
 
 }
