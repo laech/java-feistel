@@ -1,5 +1,7 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 import java.math.BigInteger;
 
 import static feistel.Constraints.requireNonNegative;
@@ -18,7 +20,7 @@ final class FeistelOfBigIntegerBinary {
     /**
      * Adapted from the traditional balanced Feistel.
      */
-    static Feistel<BigInteger> balanced(
+    static Isomorphism<BigInteger, BigInteger> balanced(
             int rounds,
             int totalBits,
             RoundFunction<BigInteger> rf
@@ -47,7 +49,7 @@ final class FeistelOfBigIntegerBinary {
             }
             return a.shiftLeft(halfBits).or(b);
         };
-        return Feistel.of(x -> {
+        return Isomorphism.of(x -> {
             requireNonNegative(x, max);
             return impl.apply(x, false);
         }, y -> {
@@ -60,7 +62,7 @@ final class FeistelOfBigIntegerBinary {
      * Adapted from Unbalanced Feistel Networks and Block-Cipher Design
      * by Bruce Schneier and John Kelsey.
      */
-    static Feistel<BigInteger> unbalanced(
+    static Isomorphism<BigInteger, BigInteger> unbalanced(
             int rounds,
             int totalBits,
             int sourceBits,
@@ -87,7 +89,7 @@ final class FeistelOfBigIntegerBinary {
         BigInteger sourceMask = max.shiftRight(nullBits + targetBits);
         BigInteger targetMask = max.shiftRight(nullBits + sourceBits);
 
-        return Feistel.of(x -> {
+        return Isomorphism.of(x -> {
 
             requireNonNegative(x, max);
             for (int i = 0; i < rounds; i++) {

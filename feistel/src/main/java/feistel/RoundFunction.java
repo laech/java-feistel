@@ -1,9 +1,11 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 /**
  * Function to be called for each round of a Feistel function.
  * <p>
- * For a Feistel function to be {@link Feistel#inverse() invertible},
+ * For a Feistel function to be {@link Isomorphism#inverse() invertible},
  * the round function must be a pure function - without side effects,
  * given the same input must always produce the same output.
  */
@@ -16,7 +18,7 @@ public interface RoundFunction<A> {
      * @param round the current round, for a Feistel with n rounds,
      *              the values will be {0,1,...,n-1} in that order,
      *              the order will be reversed for the
-     *              {@link Feistel#inverse() inverse} Feistel.
+     *              {@link Isomorphism#inverse() inverse} Feistel.
      * @param value the current round value
      */
     A apply(int round, A value);

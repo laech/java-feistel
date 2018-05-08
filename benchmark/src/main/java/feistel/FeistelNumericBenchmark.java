@@ -1,5 +1,6 @@
 package feistel;
 
+import isomorphic.Isomorphism;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
@@ -29,10 +30,10 @@ public class FeistelNumericBenchmark {
     @Param("200")
     private int b;
 
-    private Feistel.OfLong longNumeric1;
-    private Feistel.OfLong longNumeric2;
-    private Feistel<BigInteger> bigNumeric1;
-    private Feistel<BigInteger> bigNumeric2;
+    private Isomorphism.OfLong longNumeric1;
+    private Isomorphism.OfLong longNumeric2;
+    private Isomorphism<BigInteger, BigInteger> bigNumeric1;
+    private Isomorphism<BigInteger, BigInteger> bigNumeric2;
 
     @Setup
     public void setup() {

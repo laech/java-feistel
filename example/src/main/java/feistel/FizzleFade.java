@@ -1,5 +1,7 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ final class FizzleFade extends SwingWorker<Void, Point> {
     @Override
     protected Void doInBackground() {
         List<Point> points = new ArrayList<>(50);
-        Feistel.OfInt feistel = Feistel.ofIntNumeric1(7, width, height,
+        Isomorphism.OfInt feistel = Feistel.ofIntNumeric1(7, width, height,
                 (round, input) -> input * 11 + (input >> 5) + 7 * 127 ^ input);
 
         for (int i = 0, end = width * height; i < end; i++) {

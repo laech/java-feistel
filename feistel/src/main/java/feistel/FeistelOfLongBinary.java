@@ -1,5 +1,7 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 import static feistel.Constraints.requireNonNegative;
 import static java.lang.Long.toHexString;
 
@@ -15,7 +17,7 @@ final class FeistelOfLongBinary {
     /**
      * Adapted from the traditional balanced Feistel.
      */
-    static Feistel.OfLong balanced(
+    static Isomorphism.OfLong balanced(
             int rounds,
             int totalBits,
             RoundFunction.OfLong rf
@@ -44,7 +46,7 @@ final class FeistelOfLongBinary {
             return (a << halfBits) | b;
         };
 
-        return Feistel.ofLong(x -> {
+        return Isomorphism.OfLong.of(x -> {
             checkMask(x, totalMask);
             return impl.applyAsLong(x, false);
         }, y -> {
@@ -57,7 +59,7 @@ final class FeistelOfLongBinary {
      * Adapted from Unbalanced Feistel Networks and Block-Cipher Design
      * by Bruce Schneier and John Kelsey.
      */
-    static Feistel.OfLong unbalanced(
+    static Isomorphism.OfLong unbalanced(
             int rounds,
             int totalBits,
             int sourceBits,
@@ -82,7 +84,7 @@ final class FeistelOfLongBinary {
         long sourceMask = totalMask >>> nullBits >>> targetBits;
         long targetMask = totalMask >>> nullBits >>> sourceBits;
 
-        return Feistel.ofLong(x -> {
+        return Isomorphism.OfLong.of(x -> {
 
             checkMask(x, totalMask);
             for (int i = 0; i < rounds; i++) {

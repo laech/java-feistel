@@ -1,5 +1,7 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 import java.math.BigInteger;
 import java.util.function.UnaryOperator;
 
@@ -11,7 +13,7 @@ final class FeistelOfBigIntegerNumeric {
     private FeistelOfBigIntegerNumeric() {
     }
 
-    private static Feistel<BigInteger> create(
+    private static Isomorphism<BigInteger, BigInteger> create(
             int rounds,
             BigInteger a,
             BigInteger b,
@@ -27,7 +29,7 @@ final class FeistelOfBigIntegerNumeric {
         requireNonNegative(b, "b");
 
         BigInteger max = a.multiply(b).subtract(ONE);
-        return Feistel.of(
+        return Isomorphism.of(
                 x -> {
                     requireNonNegative(x, max);
                     return f.apply(x);
@@ -43,7 +45,7 @@ final class FeistelOfBigIntegerNumeric {
      * Algorithm FE1 from Format-Preserving Encryption by
      * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
      */
-    static Feistel<BigInteger> fe1(
+    static Isomorphism<BigInteger, BigInteger> fe1(
             int rounds,
             BigInteger a,
             BigInteger b,
@@ -76,7 +78,7 @@ final class FeistelOfBigIntegerNumeric {
      * Algorithm FE2 from Format-Preserving Encryption by
      * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
      */
-    static Feistel<BigInteger> fe2(
+    static Isomorphism<BigInteger, BigInteger> fe2(
             int rounds,
             BigInteger a,
             BigInteger b,

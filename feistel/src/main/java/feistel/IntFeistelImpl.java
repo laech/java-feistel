@@ -1,15 +1,17 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 import static java.lang.Integer.toUnsignedLong;
 import static java.lang.Math.multiplyExact;
 import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
 
-final class IntFeistelImpl implements Feistel.OfInt {
+final class IntFeistelImpl implements Isomorphism.OfInt {
 
-    private final Feistel.OfLong delegate;
+    private final Isomorphism.OfLong delegate;
 
-    IntFeistelImpl(Feistel.OfLong delegate) {
+    IntFeistelImpl(Isomorphism.OfLong delegate) {
         this.delegate = requireNonNull(delegate);
     }
 
@@ -36,7 +38,7 @@ final class IntFeistelImpl implements Feistel.OfInt {
     }
 
     @Override
-    public Feistel.OfInt inverse() {
+    public Isomorphism.OfInt inverse() {
         return new IntFeistelImpl(delegate.inverse());
     }
 }

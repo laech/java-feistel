@@ -1,5 +1,6 @@
 package feistel;
 
+import isomorphic.Isomorphism;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -84,14 +85,14 @@ final class FeistelNumericTest extends BaseTest {
             this.bigF = bigF;
         }
 
-        Stream<Feistel.OfLong> toFeistelOfLong() {
+        Stream<Isomorphism.OfLong> toFeistelOfLong() {
             return Stream.of(
                     FeistelOfLongNumeric.fe1(rounds, a, b, longF),
                     FeistelOfLongNumeric.fe2(rounds, a, b, longF)
             );
         }
 
-        Stream<Feistel<BigInteger>> toFeistelOfBigInteger() {
+        Stream<Isomorphism<BigInteger, BigInteger>> toFeistelOfBigInteger() {
             BigInteger a = BigInteger.valueOf(this.a);
             BigInteger b = BigInteger.valueOf(this.b);
             return Stream.of(
@@ -122,7 +123,7 @@ final class FeistelNumericTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("feistel64")
-    void isPermutation64(Params params, Feistel.OfLong feistel) {
+    void isPermutation64(Params params, Isomorphism.OfLong feistel) {
         long count = params.countLong();
         assertEquals(count, LongStream
                 .range(0, count)
@@ -137,7 +138,7 @@ final class FeistelNumericTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("feistel64")
-    void isInverse64(Params params, Feistel.OfLong feistel) {
+    void isInverse64(Params params, Isomorphism.OfLong feistel) {
         LongUnaryOperator id = feistel.inverse().compose(feistel);
         long count = params.countLong();
         for (long i = 0; i < count; i++) {
@@ -148,7 +149,7 @@ final class FeistelNumericTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("feistelBigInteger")
-    void isPermutationBigInteger(Params params, Feistel<BigInteger> feistel) {
+    void isPermutationBigInteger(Params params, Isomorphism<BigInteger, BigInteger> feistel) {
         BigInteger count = params.countBigInteger();
         assertEquals(count.longValue(), LongStream
                 .range(0, count.longValue())
@@ -164,7 +165,7 @@ final class FeistelNumericTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("feistelBigInteger")
-    void isInverseBigInteger(Params params, Feistel<BigInteger> feistel) {
+    void isInverseBigInteger(Params params, Isomorphism<BigInteger, BigInteger> feistel) {
         Function<BigInteger, BigInteger> id = feistel.andThen(feistel.inverse());
         BigInteger count = params.countBigInteger();
         for (BigInteger i = ZERO; i.compareTo(count) < 0; i = i.add(ONE)) {

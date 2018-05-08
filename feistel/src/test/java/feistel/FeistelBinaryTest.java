@@ -2,6 +2,7 @@ package feistel;
 
 import com.carrotsearch.hppc.LongHashSet;
 import com.carrotsearch.hppc.LongSet;
+import isomorphic.Isomorphism;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -78,9 +79,9 @@ final class FeistelBinaryTest extends BaseTest {
             this.totalBits = totalBits;
         }
 
-        abstract Feistel.OfLong toFeistelOfLong();
+        abstract Isomorphism.OfLong toFeistelOfLong();
 
-        abstract Feistel<BigInteger> toFeistelBigInteger();
+        abstract Isomorphism<BigInteger, BigInteger> toFeistelBigInteger();
 
         BigInteger maxBigInteger() {
             return ONE.shiftLeft(totalBits).subtract(ONE);
@@ -105,12 +106,12 @@ final class FeistelBinaryTest extends BaseTest {
         }
 
         @Override
-        Feistel.OfLong toFeistelOfLong() {
+        Isomorphism.OfLong toFeistelOfLong() {
             return FeistelOfLongBinary.balanced(rounds, totalBits, longF);
         }
 
         @Override
-        Feistel<BigInteger> toFeistelBigInteger() {
+        Isomorphism<BigInteger, BigInteger> toFeistelBigInteger() {
             return FeistelOfBigIntegerBinary.balanced(
                     rounds, totalBits, bigF);
         }
@@ -148,13 +149,13 @@ final class FeistelBinaryTest extends BaseTest {
         }
 
         @Override
-        Feistel.OfLong toFeistelOfLong() {
+        Isomorphism.OfLong toFeistelOfLong() {
             return FeistelOfLongBinary.unbalanced(
                     rounds, totalBits, sourceBits, targetBits, longF);
         }
 
         @Override
-        Feistel<BigInteger> toFeistelBigInteger() {
+        Isomorphism<BigInteger, BigInteger> toFeistelBigInteger() {
             return FeistelOfBigIntegerBinary.unbalanced(
                     rounds, totalBits, sourceBits, targetBits, f);
         }
@@ -173,7 +174,7 @@ final class FeistelBinaryTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("params")
     void isPermutation64(Params params) {
-        Feistel.OfLong feistel = params.toFeistelOfLong();
+        Isomorphism.OfLong feistel = params.toFeistelOfLong();
         int count = testCountOfLong(params);
         long increment = testIncrementOfLong(params, count);
         long max = 1L << params.totalBits;
@@ -195,10 +196,10 @@ final class FeistelBinaryTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("params")
     void isInverse64(Params params) {
-        Feistel.OfLong feistel = params.toFeistelOfLong();
+        Isomorphism.OfLong feistel = params.toFeistelOfLong();
         int count = testCountOfLong(params);
         long increment = testIncrementOfLong(params, count);
-        Feistel.OfLong id = feistel.inverse().compose(feistel);
+        Isomorphism.OfLong id = feistel.inverse().compose(feistel);
         for (int i = 0; i < count; i++) {
             long input = increment * i;
             assertEquals(input, id.applyAsLong(input));
@@ -223,7 +224,7 @@ final class FeistelBinaryTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("params")
     void isPermutationBigInteger(Params params) {
-        Feistel<BigInteger> feistel = params.toFeistelBigInteger();
+        Isomorphism<BigInteger, BigInteger> feistel = params.toFeistelBigInteger();
         int count = testCountOfBigInteger(params);
         BigInteger increment = testIncrementOfBigInteger(params, count);
         BigInteger max = params.maxBigInteger();
@@ -248,7 +249,7 @@ final class FeistelBinaryTest extends BaseTest {
     @MethodSource("params")
     void isInverseBigInteger(Params params) {
         int count = testCountOfBigInteger(params);
-        Feistel<BigInteger> feistel = params.toFeistelBigInteger();
+        Isomorphism<BigInteger, BigInteger> feistel = params.toFeistelBigInteger();
         BigInteger increment = testIncrementOfBigInteger(params, count);
         Function<BigInteger, BigInteger> id = feistel.inverse().compose(feistel);
         Stream.iterate(ZERO, i -> i.add(increment))

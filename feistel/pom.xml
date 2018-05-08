@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.gitlab.lae.isomorphic</groupId>
+            <artifactId>isomorphic</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
             <artifactId>stack-source-junit5</artifactId>
             <version>0.2-beta17</version>

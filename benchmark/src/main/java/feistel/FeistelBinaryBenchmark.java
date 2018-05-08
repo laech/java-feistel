@@ -1,5 +1,6 @@
 package feistel;
 
+import isomorphic.Isomorphism;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
@@ -23,10 +24,10 @@ public class FeistelBinaryBenchmark {
     @Param("7")
     private int rounds;
 
-    private Feistel.OfLong longBalanced;
-    private Feistel.OfLong longUnbalanced;
-    private Feistel<BigInteger> bigIntegerBalanced;
-    private Feistel<BigInteger> bigIntegerUnbalanced;
+    private Isomorphism.OfLong longBalanced;
+    private Isomorphism.OfLong longUnbalanced;
+    private Isomorphism<BigInteger, BigInteger> bigIntegerBalanced;
+    private Isomorphism<BigInteger, BigInteger> bigIntegerUnbalanced;
 
     @Setup
     public void setup() {

@@ -1,5 +1,7 @@
 package feistel;
 
+import isomorphic.Isomorphism;
+
 import java.util.function.LongUnaryOperator;
 
 import static feistel.Constraints.requireNonNegative;
@@ -11,7 +13,7 @@ final class FeistelOfLongNumeric {
     private FeistelOfLongNumeric() {
     }
 
-    private static Feistel.OfLong create(
+    private static Isomorphism.OfLong create(
             int rounds,
             long a,
             long b,
@@ -24,7 +26,7 @@ final class FeistelOfLongNumeric {
         requireNonNegative(b, "b");
 
         long max = calculateMax(a, b);
-        return Feistel.ofLong(
+        return Isomorphism.OfLong.of(
                 x -> {
                     requireNonNegative(x, max);
                     return f.applyAsLong(x);
@@ -40,7 +42,7 @@ final class FeistelOfLongNumeric {
      * Algorithm FE1 from Format-Preserving Encryption by
      * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
      */
-    static Feistel.OfLong fe1(
+    static Isomorphism.OfLong fe1(
             int rounds,
             long a,
             long b,
@@ -73,7 +75,7 @@ final class FeistelOfLongNumeric {
      * Algorithm FE2 from Format-Preserving Encryption by
      * Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers
      */
-    static Feistel.OfLong fe2(
+    static Isomorphism.OfLong fe2(
             int rounds,
             long a,
             long b,
