@@ -11,7 +11,7 @@ import static java.awt.Color.RED;
 import static java.lang.Thread.sleep;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-final class FizzleFade extends SwingWorker<Void, Point> {
+public final class FizzleFade extends SwingWorker<Void, Point> {
 
     private final int width;
     private final int height;
