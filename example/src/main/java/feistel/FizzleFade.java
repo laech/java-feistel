@@ -4,9 +4,10 @@ import isomorphic.Isomorphism;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
+import static feistel.MoreCollectors.split;
 import static java.awt.Color.RED;
 import static java.lang.Thread.sleep;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -26,31 +27,27 @@ public final class FizzleFade extends SwingWorker<Void, Point> {
         this.graphics.setColor(RED);
     }
 
+    private IntStream pixels() {
+        RoundFunction.OfInt f = (round, value) -> value * 11 + (value >> 5) + 7 * 127 ^ value;
+        Isomorphism.OfInt feistel = Feistel.ofIntNumeric(width, height, 3, f);
+        return IntStream.range(0, width * height).map(feistel);
+    }
+
+    private Point toPoint(int i) {
+        return new Point(i % width, i / width);
+    }
+
     @Override
     protected Void doInBackground() {
-        List<Point> points = new ArrayList<>(50);
-        Isomorphism.OfInt feistel = Feistel.ofIntNumeric(width, height, 7,
-                (round, input) -> input * 11 + (input >> 5) + 7 * 127 ^ input);
 
-        for (int i = 0, end = width * height; i < end; i++) {
-            int j = feistel.applyAsInt(i);
-            points.add(new Point(j % width, j / width));
-            if (points.size() >= 100) {
-                publish(points.toArray(new Point[0]));
-                points.clear();
-                try {
-                    sleep(10);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return null;
-                }
-            }
-        }
-
-        if (!points.isEmpty()) {
+        pixels().mapToObj(this::toPoint).collect(split(100, points -> {
             publish(points.toArray(new Point[0]));
-            points.clear();
-        }
+            try {
+                sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }));
 
         try {
             sleep(2000);
