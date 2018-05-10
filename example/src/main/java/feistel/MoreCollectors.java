@@ -33,7 +33,7 @@ final class MoreCollectors {
             List<T> objects, boolean finish, int n, Consumer<List<T>> consumer
     ) {
         if ((finish && !objects.isEmpty()) || objects.size() >= n) {
-            consumer.accept(unmodifiableList(objects));
+            consumer.accept(unmodifiableList(new ArrayList<>(objects)));
             objects.clear();
         }
     }
