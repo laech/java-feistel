@@ -50,9 +50,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <includeDependencySources>true</includeDependencySources>
-                </configuration>
             </plugin>
         </plugins>
     </build>

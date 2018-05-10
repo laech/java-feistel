@@ -20,6 +20,7 @@ public interface RoundFunction<A> {
      *              the order will be reversed for the
      *              {@link Isomorphism#inverse() inverse} Feistel.
      * @param value the current round value
+     * @return the round result
      */
     A apply(int round, A value);
 
@@ -30,7 +31,14 @@ public interface RoundFunction<A> {
     interface OfInt extends RoundFunction<Integer> {
 
         /**
-         * @see #apply(int, Integer)
+         * Applies this round function on the current round value.
+         *
+         * @param round the current round, for a Feistel with n rounds,
+         *              the values will be {0,1,...,n-1} in that order,
+         *              the order will be reversed for the
+         *              {@link Isomorphism#inverse() inverse} Feistel.
+         * @param value the current round value
+         * @return the round result
          */
         int applyAsInt(int round, int value);
 
@@ -47,7 +55,14 @@ public interface RoundFunction<A> {
     interface OfLong extends RoundFunction<Long> {
 
         /**
-         * @see #apply(int, Long)
+         * Applies this round function on the current round value.
+         *
+         * @param round the current round, for a Feistel with n rounds,
+         *              the values will be {0,1,...,n-1} in that order,
+         *              the order will be reversed for the
+         *              {@link Isomorphism#inverse() inverse} Feistel.
+         * @param value the current round value
+         * @return the round result
          */
         long applyAsLong(int round, long value);
 

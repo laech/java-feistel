@@ -33,6 +33,7 @@ public final class Feistel {
      * @param targetBits number of bits of the target block (the right half)
      * @param rounds     total number of rounds
      * @param f          the round function
+     * @return a Feistel function
      * @throws IllegalArgumentException if any of the following is true:
      *                                  <ul>
      *                                  <li>
@@ -40,14 +41,15 @@ public final class Feistel {
      *                                  {@code sourceBits},
      *                                  {@code targetBits}, or
      *                                  {@code rounds}
-     *                                  is negative</li>
+     *                                  is negative
+     *                                  </li>
      *                                  <li>
      *                                  {@code sourceBits} +
      *                                  {@code targetBits} &gt;
      *                                  {@code totalBits}
      *                                  </li>
      *                                  </ul>
-     * @throws NullPointerException     if the round function is null
+     * @throws NullPointerException     if {@code f} is null
      */
     public static Isomorphism<BigInteger, BigInteger> ofBigIntegerBinary(
             int totalBits,
@@ -71,7 +73,10 @@ public final class Feistel {
      * of the returned function - {0,1,...,a x b - 1}
      *
      * @param rounds total number of rounds
+     * @param a      the {@code a} in {@code a x b}
+     * @param b      the {@code b} in {@code a x b}
      * @param f      the round function
+     * @return a Feistel function
      * @throws IllegalArgumentException if {@code a}, {@code b}, or {@code rounds}
      *                                  is negative
      * @throws NullPointerException     if {@code a}, {@code b}, or {@code f} is null
@@ -85,23 +90,114 @@ public final class Feistel {
         return FeistelOfBigIntegerNumeric.fe2(rounds, a, b, f);
     }
 
+    /**
+     * Returns a binary Feistel that is at most 64-bit.
+     * <p>
+     * This implementation is adapted from
+     * <em>Unbalanced Feistel Networks and Block-Cipher Design</em>
+     * by Bruce Schneier and John Kelsey.
+     *
+     * @param totalBits  total number of bits, defining the set of valid
+     *                   elements of the domain and codomain of the returned
+     *                   function - {0,1,...,2<sup>totalBits</sup> - 1}, must
+     *                   not be greater than 64
+     * @param sourceBits number of bits of the source block (the left half)
+     * @param targetBits number of bits of the target block (the right half)
+     * @param rounds     total number of rounds
+     * @param f          the round function
+     * @return a Feistel function
+     * @throws IllegalArgumentException if any of the following is true:
+     *                                  <ul>
+     *                                  <li>
+     *                                  {@code totalBits} is greater than 64
+     *                                  </li>
+     *                                  <li>
+     *                                  {@code totalBits},
+     *                                  {@code sourceBits},
+     *                                  {@code targetBits}, or
+     *                                  {@code rounds}
+     *                                  is negative
+     *                                  </li>
+     *                                  <li>
+     *                                  {@code sourceBits} +
+     *                                  {@code targetBits} &gt;
+     *                                  {@code totalBits}
+     *                                  </li>
+     *                                  </ul>
+     * @throws NullPointerException     if {@code f} is null
+     */
     public static OfLong ofLongBinary(
+            int totalBits,
             int sourceBits,
             int targetBits,
             int rounds,
             RoundFunction.OfLong f
     ) {
         return FeistelOfLongBinary.unbalanced(
-                rounds, 64, sourceBits, targetBits, f
+                rounds, totalBits, sourceBits, targetBits, f
         );
     }
 
+    /**
+     * Returns a numeric Feistel that is at most 64-bit.
+     * <p>
+     * This implements the <em>FE2</em> algorithm from <em>Format-Preserving Encryption</em>
+     * by Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers.
+     * <p>
+     * {@code a x b} defines the set of valid elements of the domain and codomain
+     * of the returned function - {0,1,...,a x b - 1}
+     *
+     * @param a      the {@code a} in {@code a x b}
+     * @param b      the {@code b} in {@code a x b}
+     * @param rounds total number of rounds
+     * @param f      the round function
+     * @return a Feistel function
+     * @throws IllegalArgumentException if {@code a}, {@code b}, or {@code rounds}
+     *                                  is negative, or {@code a x b} overflows
+     * @throws NullPointerException     if {@code f} is null
+     */
     public static OfLong ofLongNumeric(
             long a, long b, int rounds, RoundFunction.OfLong f
     ) {
         return FeistelOfLongNumeric.fe2(rounds, a, b, f);
     }
 
+    /**
+     * Returns a binary Feistel that is at most 32-bit.
+     * <p>
+     * This implementation is adapted from
+     * <em>Unbalanced Feistel Networks and Block-Cipher Design</em>
+     * by Bruce Schneier and John Kelsey.
+     *
+     * @param totalBits  total number of bits, defining the set of valid
+     *                   elements of the domain and codomain of the returned
+     *                   function - {0,1,...,2<sup>totalBits</sup> - 1}, must
+     *                   not be greater than 32
+     * @param sourceBits number of bits of the source block (the left half)
+     * @param targetBits number of bits of the target block (the right half)
+     * @param rounds     total number of rounds
+     * @param f          the round function
+     * @return a Feistel function
+     * @throws IllegalArgumentException if any of the following is true:
+     *                                  <ul>
+     *                                  <li>
+     *                                  {@code totalBits} is greater than 32
+     *                                  </li>
+     *                                  <li>
+     *                                  {@code totalBits},
+     *                                  {@code sourceBits},
+     *                                  {@code targetBits}, or
+     *                                  {@code rounds}
+     *                                  is negative
+     *                                  </li>
+     *                                  <li>
+     *                                  {@code sourceBits} +
+     *                                  {@code targetBits} &gt;
+     *                                  {@code totalBits}
+     *                                  </li>
+     *                                  </ul>
+     * @throws NullPointerException     if {@code f} is null
+     */
     public static OfInt ofIntBinary(
             int totalBits,
             int sourceBits,
@@ -115,6 +211,24 @@ public final class Feistel {
                 IntFeistelImpl.toRoundFunction64(f)));
     }
 
+    /**
+     * Returns a numeric Feistel that is at most 32-bit.
+     * <p>
+     * This implements the <em>FE2</em> algorithm from <em>Format-Preserving Encryption</em>
+     * by Mihir Bellare, Thomas Ristenpart, Phillip Rogaway, and Till Stegers.
+     * <p>
+     * {@code a x b} defines the set of valid elements of the domain and codomain
+     * of the returned function - {0,1,...,a x b - 1}
+     *
+     * @param a      the {@code a} in {@code a x b}
+     * @param b      the {@code b} in {@code a x b}
+     * @param rounds total number of rounds
+     * @param f      the round function
+     * @return a Feistel function
+     * @throws IllegalArgumentException if {@code a}, {@code b}, or {@code rounds}
+     *                                  is negative, or {@code a x b} overflows
+     * @throws NullPointerException     if {@code f} is null
+     */
     public static OfInt ofIntNumeric(
             int a, int b, int rounds, RoundFunction.OfInt f
     ) {
