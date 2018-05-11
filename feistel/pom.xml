@@ -80,6 +80,11 @@
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
+                        <configuration>
+                            <links>
+                                <link>https://lae.gitlab.io/java-isomorphic/apidocs/</link>
+                            </links>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
