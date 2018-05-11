@@ -78,7 +78,7 @@
                     <execution>
                         <phase>verify</phase>
                         <goals>
-                            <goal>aggregate</goal>
+                            <goal>javadoc</goal>
                         </goals>
                         <configuration>
                             <links>

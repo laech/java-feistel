@@ -15,7 +15,7 @@ pages:
   script:
   - 'mvn --batch-mode clean verify'
   - 'mkdir public'
-  - 'mv feistel/target/apidocs public/apidocs'
+  - 'mv feistel/target/site/apidocs public/apidocs'
   artifacts:
     paths:
     - public
