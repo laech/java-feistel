@@ -25,13 +25,13 @@
         <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
             <artifactId>stack-source-junit5</artifactId>
-            <version>0.2-beta17</version>
+            <version>0.2.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
             <artifactId>stack-source-processor</artifactId>
-            <version>0.2-beta17</version>
+            <version>0.2.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -70,19 +70,6 @@
                         <version>1.1.0</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
