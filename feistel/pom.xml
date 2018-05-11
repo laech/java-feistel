@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.gitlab.lae.isomorphic</groupId>
             <artifactId>isomorphic</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1-beta1</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
