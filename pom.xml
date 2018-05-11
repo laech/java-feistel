@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>feistel</groupId>
+    <groupId>com.gitlab.lae.feistel</groupId>
     <artifactId>feistel-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
@@ -52,8 +52,8 @@
 
     <modules>
         <module>feistel</module>
-        <module>benchmark</module>
-        <module>example</module>
+        <module>feistel-benchmark</module>
+        <module>feistel-example</module>
     </modules>
 
     <build>
