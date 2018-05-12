@@ -2,7 +2,7 @@
 
 Generalized [Feistel](https://en.wikipedia.org/wiki/Feistel_cipher) functions.
 
-# Usage
+## Usage
 
 Requires Java 8+.
 
