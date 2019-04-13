@@ -14,13 +14,14 @@
 
     <properties>
         <junit.version>5.4.2</junit.version>
+        <isomorphic.version>0.1-beta1</isomorphic.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.gitlab.lae.isomorphic</groupId>
             <artifactId>isomorphic</artifactId>
-            <version>0.1-beta1</version>
+            <version>${isomorphic.version}</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.lae.stack.source</groupId>
@@ -75,7 +76,7 @@
                         </goals>
                         <configuration>
                             <links>
-                                <link>https://lae.gitlab.io/java-isomorphic/apidocs/</link>
+                                <link>https://static.javadoc.io/com.gitlab.lae.isomorphic/isomorphic/${isomorphic.version}</link>
                             </links>
                         </configuration>
                     </execution>
