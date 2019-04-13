@@ -6,7 +6,7 @@
     <groupId>com.gitlab.lae.feistel</groupId>
     <artifactId>feistel-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1-beta3-SNAPSHOT</version>
+    <version>0.1-beta3</version>
 
     <name>Feistel</name>
     <description>Feistel functions.</description>
@@ -17,7 +17,7 @@
         <developerConnection>
             scm:git:git@gitlab.com:lae/java-feistel.git
         </developerConnection>
-        <tag>HEAD</tag>
+        <tag>0.1-beta3</tag>
     </scm>
 
     <licenses>
