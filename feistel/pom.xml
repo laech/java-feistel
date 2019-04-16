@@ -65,19 +65,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                        <configuration>
-                            <links>
-                                <link>https://static.javadoc.io/com.gitlab.lae.isomorphic/isomorphic/${isomorphic.version}</link>
-                            </links>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <links>
+                        <link>https://static.javadoc.io/com.gitlab.lae.isomorphic/isomorphic/${isomorphic.version}</link>
+                    </links>
+                </configuration>
             </plugin>
         </plugins>
     </build>
